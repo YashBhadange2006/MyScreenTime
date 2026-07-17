@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+xmlns:app="http://schemas.android.com/apk/res-auto"
+android:id="@+id/nav_graph"
+app:startDestination="@id/permissionFragment">
+
+<fragment
+    android:id="@+id/permissionFragment"
+    android:name="com.example.myscreentime.fragments.PermissionFragment"
+    android:label="Permission" />
+
+<fragment
+    android:id="@+id/dashboardFragment"
+    android:name="com.example.myscreentime.fragments.DashboardFragment"
+    android:label="Dashboard" />
+
+<fragment
+    android:id="@+id/settingsFragment"
+    android:name="com.example.myscreentime.fragments.SettingsFragment"
+    android:label="Settings" />
+
+</navigation>
