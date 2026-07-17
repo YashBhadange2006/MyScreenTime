@@ -8,14 +8,28 @@
     tools:context=".fragments.dashboardscreen.DashboardFragment"
     android:background="@color/new_white">
 
+    <com.google.android.material.appbar.MaterialToolbar
+        android:id="@+id/dashboard_top_app_bar"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:background="@color/new_white"
+        android:paddingStart="8dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:logo="@drawable/baseline_dashboard_24"
+        app:title="    Dashboard"
+        app:titleTextColor="@android:color/black" />
+
     <include
         android:id="@+id/total_time_card"
         layout="@layout/dashboard_total_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="24dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
+        app:layout_constraintTop_toBottomOf="@id/dashboard_top_app_bar"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -57,12 +71,10 @@
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/app_list"
         app:layout_constraintTop_toBottomOf="@+id/title_text"
+        app:layout_constraintBottom_toBottomOf="parent"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        >
+        android:layout_height="0dp">
 
     </androidx.recyclerview.widget.RecyclerView>
-
-
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -8,17 +8,11 @@ import android.view.ViewGroup
 import android.widget.Button
 import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
+import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import com.example.myscreentime.R
 
 class PermissionFragment : Fragment() {
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        // 1. Initial Check: If permission is already granted when app starts, go straight to Dashboard
-        checkPermissionAndNavigate()
-    }
-
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,7 +47,6 @@ class PermissionFragment : Fragment() {
 
     override fun onResume() {
         super.onResume()
-        // 2. Return Check: If user just granted permission in settings and came back, go to Dashboard
         checkPermissionAndNavigate()
     }
 
@@ -70,6 +63,13 @@ class PermissionFragment : Fragment() {
     }
 
     private fun navigateToDashboard() {
-        findNavController().navigate(R.id.dashboardFragment)
+        findNavController().navigate(
+            R.id.dashboardFragment,
+            null,
+            NavOptions.Builder()
+                .setLaunchSingleTop(true)
+                .setPopUpTo(R.id.nav_graph, true)
+                .build()
+        )
     }
 }
