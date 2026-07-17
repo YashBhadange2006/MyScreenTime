@@ -4,6 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
+    android:id="@+id/total_screen_card"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".fragments.permissionscreen.PermissionFragment"
     android:background="@color/new_white"
@@ -67,7 +68,8 @@
         app:layout_constraintEnd_toEndOf="parent" />
 
     <include
-        layout="@layout/desc_card"
+        android:id="@+id/privacy_card"
+        layout="@layout/permission_privacy_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"

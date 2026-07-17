@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
+import android.widget.FrameLayout
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import com.example.myscreentime.R
@@ -18,6 +19,7 @@ class PermissionFragment : Fragment() {
         checkPermissionAndNavigate()
     }
 
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?,
@@ -29,6 +31,12 @@ class PermissionFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         val permissionBtn = view.findViewById<Button>(R.id.permission_btn)
+        val cardContent = view.findViewById<FrameLayout>(R.id.card_content)
+        layoutInflater.inflate(
+            R.layout.permission_card_content,
+            cardContent,
+            true
+        )
 
         permissionBtn.setOnClickListener {
             if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {

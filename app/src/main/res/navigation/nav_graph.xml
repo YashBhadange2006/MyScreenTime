@@ -11,7 +11,7 @@ app:startDestination="@id/permissionFragment">
 
 <fragment
     android:id="@+id/dashboardFragment"
-    android:name="com.example.myscreentime.fragments.DashboardFragment"
+    android:name="com.example.myscreentime.fragments.dashboardscreen.DashboardFragment"
     android:label="Dashboard" />
 
 <fragment

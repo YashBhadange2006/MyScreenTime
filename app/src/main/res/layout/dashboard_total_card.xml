@@ -4,42 +4,50 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:layout_margin="16dp"
-    app:cardBackgroundColor="@color/light_grey"
+    app:cardBackgroundColor="@color/bright_white"
     app:cardCornerRadius="24dp"
-    app:cardElevation="5dp"
+    app:cardElevation="1dp"
     app:strokeWidth="0dp"
     app:cardUseCompatPadding="@android:bool/config_enableMaterialDesignInPackageInstaller">
 
     <LinearLayout
-        app:layout_constraintTop_toBottomOf="@id/permission_btn"
+        android:id="@+id/total_screen_card"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:gravity="center_horizontal"
         android:orientation="vertical"
         android:paddingLeft="24dp"
         android:paddingTop="32dp"
         android:paddingRight="24dp"
         android:paddingBottom="32dp">
 
-        <ImageView
-            android:id="@+id/iv_privacy_lock"
-            android:layout_width="32dp"
-            android:layout_height="32dp"
-            android:layout_marginBottom="16dp"
-            android:contentDescription="Privacy Lock"
-            android:src="@drawable/baseline_lock_24"
-            app:tint="#0066FF" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Total Screen Time"
+            android:textSize="18dp"
+            />
+
+        <TextView
+            android:id="@+id/total_screen_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="0h 0m"
+            android:textSize="36dp"
+            android:textStyle="bold"/>
 
         <!-- Description Text -->
         <TextView
-            android:id="@+id/tv_privacy_description"
-            android:layout_width="match_parent"
+            android:id="@+id/percent_comp_textview"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
             android:lineSpacingMultiplier="1.2"
-            android:text="Your usage data stays on your device unless you choose to generate AI insights. We prioritize your privacy through local processing and encrypted analysis."
+            android:text="12% less than yestarday."
             android:textColor="#4A5568"
-            android:textSize="14sp" />
+            android:textSize="16sp" />
 
     </LinearLayout>
+
+
 </com.google.android.material.card.MaterialCardView>
+
+
