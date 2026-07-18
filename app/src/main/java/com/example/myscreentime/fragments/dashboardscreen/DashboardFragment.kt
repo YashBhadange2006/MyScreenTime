@@ -9,9 +9,14 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.myscreentime.R
+import com.example.myscreentime.fragments.permissionscreen.AppUsageEntry
 import com.example.myscreentime.fragments.permissionscreen.getLastUsedApp
 import com.example.myscreentime.fragments.permissionscreen.getMostUsedApp
+import com.example.myscreentime.fragments.permissionscreen.getSortedUsedApps
 import com.example.myscreentime.fragments.permissionscreen.getTodayScreenTime
 
 class DashboardFragment : Fragment() {
@@ -57,6 +62,13 @@ class DashboardFragment : Fragment() {
         lastUsedTitle.text = "Last Used App"
         lastUsedName.text = app_name_last ?: "No app data"
         bindAppIcon(lastUsedIcon, lastUsed?.packageName)
+
+        val appList = view.findViewById<RecyclerView>(R.id.app_list)
+        appList.layoutManager = LinearLayoutManager(requireContext())
+        appList.setHasFixedSize(true)
+        appList.isNestedScrollingEnabled = false
+        (appList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
+        appList.adapter = AppAdapter(buildUsageItems())
     }
 
 
@@ -72,9 +84,13 @@ class DashboardFragment : Fragment() {
         return try {
             pm.getApplicationLabel(pm.getApplicationInfo(packageName, 0)).toString()
         } catch (_: PackageManager.NameNotFoundException) {
-            packageName.substringAfterLast('.').replaceFirstChar { char ->
-                if (char.isLowerCase()) char.titlecase() else char.toString()
-            }
+            pm.getLaunchIntentForPackage(packageName)
+                ?.resolveActivityInfo(pm, PackageManager.MATCH_DEFAULT_ONLY)
+                ?.loadLabel(pm)
+                ?.toString()
+                ?: packageName.substringAfterLast('.').replaceFirstChar { char ->
+                    if (char.isLowerCase()) char.titlecase() else char.toString()
+                }
         }
     }
 
@@ -83,7 +99,9 @@ class DashboardFragment : Fragment() {
         return try {
             pm.getApplicationIcon(packageName)
         } catch (_: PackageManager.NameNotFoundException) {
-            null
+            pm.getLaunchIntentForPackage(packageName)
+                ?.resolveActivityInfo(pm, PackageManager.MATCH_DEFAULT_ONLY)
+                ?.loadIcon(pm)
         }
     }
 
@@ -93,8 +111,22 @@ class DashboardFragment : Fragment() {
             imageView.setImageDrawable(appIcon)
             imageView.imageTintList = null
         } else {
-            imageView.setImageResource(R.mipmap.ic_launcher_round)
+            imageView.setImageResource(R.drawable.ic_app_fallback)
             imageView.imageTintList = null
         }
+    }
+
+    private fun buildUsageItems(): List<RowItem> {
+        return getSortedUsedApps(requireContext()).map { usageEntry ->
+            RowItem(
+                appIcon = resolveAppIcon(usageEntry.packageName),
+                appName = resolveAppName(usageEntry.packageName),
+                usageTime = formatUsageLabel(usageEntry)
+            )
+        }
+    }
+
+    private fun formatUsageLabel(usageEntry: AppUsageEntry): String {
+        return formatTime(usageEntry.totalTimeInForeground)
     }
 }

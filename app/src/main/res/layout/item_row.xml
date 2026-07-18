@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="utf-8"?>
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/item_row_card"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginStart="16dp"
+    android:layout_marginTop="8dp"
+    android:layout_marginEnd="16dp"
+    android:layout_marginBottom="8dp"
+    app:cardBackgroundColor="#F8F9FA"
+    app:cardCornerRadius="28dp"
+    app:strokeColor="#DADCE0"
+    app:strokeWidth="1dp">
+
+    <!-- Horizontal layout to split the circular icon and text block -->
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:gravity="center_vertical"
+        android:padding="20dp">
+
+        <!-- Circular App Icon / Placeholder -->
+        <ImageView
+            android:id="@+id/app_icon_row"
+            android:layout_width="48dp"
+            android:layout_height="48dp"
+            android:layout_marginEnd="16dp"
+            android:background="@drawable/circle_background"
+            android:padding="10dp"
+            app:tint="#5F6368" />
+
+        <!-- Vertical layout to stack the header and app name text -->
+        <RelativeLayout
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:gravity="center_vertical">
+
+            <TextView
+                android:id="@+id/tv_app_name_row"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#000000"
+                android:textSize="18sp"
+                android:fontFamily="sans-serif-medium"
+                android:layout_alignParentStart="true"
+                android:layout_marginTop="2dp"
+                />
+
+            <TextView
+                android:id="@+id/text_above_app_name_row"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="#5F6368"
+                android:textSize="14sp"
+                android:layout_centerVertical="true"
+                android:layout_marginEnd="8dp"
+                android:layout_alignParentEnd="true"
+                android:fontFamily="sans-serif-medium"
+                />
+
+
+
+        </RelativeLayout>
+
+    </LinearLayout>
+
+</com.google.android.material.card.MaterialCardView>
