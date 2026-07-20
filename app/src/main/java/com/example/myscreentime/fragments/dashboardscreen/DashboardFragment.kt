@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.content.ContextCompat
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -25,6 +26,10 @@ import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import java.text.SimpleDateFormat
+import java.util.Calendar
+import java.util.Locale
+import kotlin.math.abs
 
 class DashboardFragment : Fragment() {
 
@@ -41,11 +46,13 @@ class DashboardFragment : Fragment() {
 
     private lateinit var insightBody: TextView
     private lateinit var insightService: DashboardInsightService
+    private lateinit var tvPercentComp: TextView
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         val tvTotalScreenTime = view.findViewById<TextView>(R.id.total_screen_textview)
+        tvPercentComp = view.findViewById(R.id.percent_comp_textview)
         val mostUsedCard = view.findViewById<View>(R.id.most_used_app_card)
         val mostUsedIcon = mostUsedCard.findViewById<ImageView>(R.id.iv_app_icon)
         val mostUsedTitle = mostUsedCard.findViewById<TextView>(R.id.text_above_app_name)
@@ -84,6 +91,13 @@ class DashboardFragment : Fragment() {
 
             tvTotalScreenTime.text = formatTime(dashboardData.totalTime)
             tvTotalScreenTime.background = null
+            
+            tvPercentComp.text = dashboardData.percentText
+            tvPercentComp.setTextColor(
+                if (dashboardData.isMoreThanYesterday) ContextCompat.getColor(requireContext(), R.color.red_500)
+                else ContextCompat.getColor(requireContext(), R.color.green_500)
+            )
+
             mostUsedName.text = dashboardData.mostUsedName ?: "No app data"
             mostUsedName.background = null
             bindAppIcon(mostUsedIcon, dashboardData.mostUsedPackage)
@@ -181,10 +195,32 @@ class DashboardFragment : Fragment() {
         imageView.imageTintList = null
     }
 
-    private fun buildDashboardData(): DashboardData {
-        val totalTime = getTodayScreenTime(requireContext())
-        val mostUsed = getMostUsedApp(requireContext())
-        val lastUsed = getLastUsedApp(requireContext())
+    private suspend fun buildDashboardData(): DashboardData {
+        val context = requireContext()
+        val totalTime = getTodayScreenTime(context)
+        val mostUsed = getMostUsedApp(context)
+        val lastUsed = getLastUsedApp(context)
+
+        // Calculate comparison with yesterday
+        val db = AppRoomDatabase.getInstance(context)
+        val dao = db.usageDao()
+        val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
+        val calendar = Calendar.getInstance()
+        calendar.add(Calendar.DAY_OF_YEAR, -1)
+        val yesterdayDate = dateFormat.format(calendar.time)
+
+        val yesterdayTotal = dao.getTotalUsageForDate(yesterdayDate)?.totalCombinedTime ?: 0L
+        
+        var percentCompText = "No data from yesterday"
+        var isMoreThanYesterday = false
+        
+        if (yesterdayTotal > 0) {
+            val diff = totalTime - yesterdayTotal
+            val percent = (abs(diff).toDouble() / yesterdayTotal.toDouble()) * 100
+            isMoreThanYesterday = diff > 0
+            val direction = if (isMoreThanYesterday) "more" else "less"
+            percentCompText = "${String.format(Locale.getDefault(), "%.1f", percent)}% $direction than yesterday"
+        }
 
         return DashboardData(
             totalTime = totalTime,
@@ -192,7 +228,9 @@ class DashboardFragment : Fragment() {
             mostUsedName = mostUsed?.packageName?.let(::resolveAppName),
             lastUsedPackage = lastUsed?.packageName,
             lastUsedName = lastUsed?.packageName?.let(::resolveAppName),
-            usageItems = buildUsageItems()
+            usageItems = buildUsageItems(),
+            percentText = percentCompText,
+            isMoreThanYesterday = isMoreThanYesterday
         )
     }
 }
@@ -203,5 +241,7 @@ private data class DashboardData(
     val mostUsedName: String?,
     val lastUsedPackage: String?,
     val lastUsedName: String?,
-    val usageItems: List<RowItem>
+    val usageItems: List<RowItem>,
+    val percentText: String,
+    val isMoreThanYesterday: Boolean
 )
