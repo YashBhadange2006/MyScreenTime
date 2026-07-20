@@ -58,11 +58,13 @@ class DashboardFragment : Fragment() {
         appList.isNestedScrollingEnabled = false
         (appList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
 
-        tvTotalScreenTime.text = "Loading..."
+        showSkeletonText(tvTotalScreenTime)
         mostUsedTitle.text = "Most Used App"
-        mostUsedName.text = "Loading..."
+        showSkeletonText(mostUsedName)
+        showSkeletonIcon(mostUsedIcon)
         lastUsedTitle.text = "Last Used App"
-        lastUsedName.text = "Loading..."
+        showSkeletonText(lastUsedName)
+        showSkeletonIcon(lastUsedIcon)
         appList.adapter = AppAdapter(emptyList())
 
         insightBody.text = "Insights will appear after the first daily sync stores a full day of usage."
@@ -72,9 +74,12 @@ class DashboardFragment : Fragment() {
             }
 
             tvTotalScreenTime.text = formatTime(dashboardData.totalTime)
+            tvTotalScreenTime.background = null
             mostUsedName.text = dashboardData.mostUsedName ?: "No app data"
+            mostUsedName.background = null
             bindAppIcon(mostUsedIcon, dashboardData.mostUsedPackage)
             lastUsedName.text = dashboardData.lastUsedName ?: "No app data"
+            lastUsedName.background = null
             bindAppIcon(lastUsedIcon, dashboardData.lastUsedPackage)
             appList.adapter = AppAdapter(dashboardData.usageItems)
 
@@ -143,6 +148,18 @@ class DashboardFragment : Fragment() {
 
     private fun formatUsageLabel(usageEntry: AppUsageEntry): String {
         return formatTime(usageEntry.totalTimeInForeground)
+    }
+
+    private fun showSkeletonText(textView: TextView) {
+        textView.text = ""
+        textView.minWidth = resources.getDimensionPixelSize(R.dimen.dashboard_skeleton_text_width)
+        textView.minHeight = resources.getDimensionPixelSize(R.dimen.dashboard_skeleton_text_height)
+        textView.background = requireContext().getDrawable(R.drawable.skeleton_bar)
+    }
+
+    private fun showSkeletonIcon(imageView: ImageView) {
+        imageView.setImageDrawable(null)
+        imageView.imageTintList = null
     }
 
     private fun buildDashboardData(): DashboardData {
