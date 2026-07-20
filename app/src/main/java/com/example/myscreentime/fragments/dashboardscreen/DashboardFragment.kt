@@ -9,15 +9,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.myscreentime.R
+import com.example.myscreentime.fragments.dashboardscreen.insights.DashboardInsightService
 import com.example.myscreentime.fragments.permissionscreen.AppUsageEntry
 import com.example.myscreentime.fragments.permissionscreen.getLastUsedApp
 import com.example.myscreentime.fragments.permissionscreen.getMostUsedApp
 import com.example.myscreentime.fragments.permissionscreen.getSortedUsedApps
 import com.example.myscreentime.fragments.permissionscreen.getTodayScreenTime
+import com.example.myscreentime.roomdb.AppRoomDatabase
+import kotlinx.coroutines.launch
 
 class DashboardFragment : Fragment() {
 
@@ -54,6 +58,8 @@ class DashboardFragment : Fragment() {
         val lastUsedIcon = lastUsedCard.findViewById<ImageView>(R.id.iv_app_icon)
         val lastUsedTitle = lastUsedCard.findViewById<TextView>(R.id.text_above_app_name)
         val lastUsedName = lastUsedCard.findViewById<TextView>(R.id.tv_app_name)
+        val insightCard = view.findViewById<View>(R.id.insight_card)
+        val insightBody = insightCard.findViewById<TextView>(R.id.insight_body)
 
         mostUsedTitle.text = "Most Used App"
         mostUsedName.text = app_name_most ?: "No app data"
@@ -69,6 +75,15 @@ class DashboardFragment : Fragment() {
         appList.isNestedScrollingEnabled = false
         (appList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
         appList.adapter = AppAdapter(buildUsageItems())
+
+        insightBody.text = "Insights will appear after the first daily sync stores a full day of usage."
+        viewLifecycleOwner.lifecycleScope.launch {
+            val insightService = DashboardInsightService(
+                context = requireContext(),
+                database = AppRoomDatabase.getInstance(requireContext())
+            )
+            insightBody.text = insightService.getLatestInsight()
+        }
     }
 
 

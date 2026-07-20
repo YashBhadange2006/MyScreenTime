@@ -66,11 +66,7 @@ fun getAppUsageStats(context: Context) {
 fun getTodayScreenTime(context: Context): Long {
     val startTime = getStartOfDayMillis()
     val endTime = System.currentTimeMillis()
-    val elapsedWallClock = endTime - startTime
-    val total = getRelevantUsageEntries(context, startTime, endTime)
-        .sumOf { it.totalTimeInForeground }
-
-    return total.coerceAtMost(elapsedWallClock)
+    return getTotalScreenTimeForRange(context, startTime, endTime)
 }
 
 fun getMostUsedApp(context: Context): AppUsageEntry? {
@@ -87,6 +83,26 @@ fun getSortedUsedApps(context: Context): List<AppUsageEntry> {
     return getRelevantUsageEntries(context).sortedByDescending {
         it.totalTimeInForeground
     }
+}
+
+fun getUsageEntriesForRange(
+    context: Context,
+    startTime: Long,
+    endTime: Long
+): List<AppUsageEntry> {
+    return getRelevantUsageEntries(context, startTime, endTime)
+}
+
+fun getTotalScreenTimeForRange(
+    context: Context,
+    startTime: Long,
+    endTime: Long
+): Long {
+    val elapsedWallClock = (endTime - startTime).coerceAtLeast(0L)
+    val total = getRelevantUsageEntries(context, startTime, endTime)
+        .sumOf { it.totalTimeInForeground }
+
+    return total.coerceAtMost(elapsedWallClock)
 }
 
 private fun getRelevantUsageEntries(context: Context): List<AppUsageEntry> {
