@@ -1,8 +1,10 @@
 # MyScreenTime App
 
+![License](https://img.shields.io/github/license/YashBhadange2006/MyScreenTime)
 ![Kotlin](https://img.shields.io/badge/Kotlin-100%25-7F52FF?logo=kotlin&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white)
 ![Status](https://img.shields.io/badge/Status-Early%20Stage-yellow)
+![Stars](https://img.shields.io/github/stars/YashBhadange2006/MyScreenTime?style=social)
 
 An Android app for tracking screen time and app usage, with AI-generated insights on digital habits. Built on Android's `UsageStatsManager`, storing history locally in Room, with Gemini used to turn raw usage stats into readable feedback.
 
@@ -31,6 +33,18 @@ Most screen time apps just show you a pie chart and leave it there. The idea her
 
 Will require Usage Access permission (`PACKAGE_USAGE_STATS`) to read app usage stats. Nothing gets sent off-device without the user triggering it.
 
+## Screenshots
+
+<p align="center">
+  <img src="img/img1.png" width="200" />
+  <img src="img/img2.png" width="200" />
+  <img src="img/img3.png" width="200" />
+</p>
+<p align="center">
+  <img src="img/img4.png" width="200" />
+  <img src="img/img5.png" width="200" />
+</p>
+
 ## Setup
 
 Requires Android Studio, SDK 24+, JDK 17.
@@ -44,6 +58,10 @@ Open in Android Studio, let Gradle sync, run on a device or emulator.
 ## Contributing
 
 Open to it once there's actual code to contribute to. For now, issues/suggestions are fine.
+
+## License
+
+MIT, see `LICENSE`.
 
 ## Author
 
