@@ -147,6 +147,19 @@
 
                 </LinearLayout>
 
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btn_set_goal"
+                    android:layout_width="match_parent"
+                    android:layout_height="56dp"
+                    android:layout_marginTop="20dp"
+                    android:text="Set Goal"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    android:fontFamily="sans-serif-medium"
+                    app:cornerRadius="16dp"
+                    android:backgroundTint="#0B63CE"
+                    android:textColor="#FFFFFF" />
+
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
