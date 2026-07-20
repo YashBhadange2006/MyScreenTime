@@ -7,6 +7,8 @@ plugins {
 }
 
 android {
+
+
     val localProperties = Properties().apply {
         val file = rootProject.file("local.properties")
         if (file.exists()) {
@@ -47,6 +49,7 @@ android {
     }
     buildFeatures {
         buildConfig = true
+        dataBinding = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
