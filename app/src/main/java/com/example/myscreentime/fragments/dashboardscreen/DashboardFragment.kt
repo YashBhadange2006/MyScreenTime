@@ -21,6 +21,7 @@ import com.example.myscreentime.fragments.permissionscreen.getMostUsedApp
 import com.example.myscreentime.fragments.permissionscreen.getSortedUsedApps
 import com.example.myscreentime.fragments.permissionscreen.getTodayScreenTime
 import com.example.myscreentime.roomdb.AppRoomDatabase
+import com.google.android.material.switchmaterial.SwitchMaterial
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -38,6 +39,9 @@ class DashboardFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_dashboard, container, false)
     }
 
+    private lateinit var insightBody: TextView
+    private lateinit var insightService: DashboardInsightService
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -51,7 +55,7 @@ class DashboardFragment : Fragment() {
         val lastUsedTitle = lastUsedCard.findViewById<TextView>(R.id.text_above_app_name)
         val lastUsedName = lastUsedCard.findViewById<TextView>(R.id.tv_app_name)
         val insightCard = view.findViewById<View>(R.id.insight_card)
-        val insightBody = insightCard.findViewById<TextView>(R.id.insight_body)
+        insightBody = insightCard.findViewById<TextView>(R.id.insight_body)
         val appList = view.findViewById<RecyclerView>(R.id.app_list)
         appList.layoutManager = LinearLayoutManager(requireContext())
         appList.setHasFixedSize(true)
@@ -66,6 +70,11 @@ class DashboardFragment : Fragment() {
         showSkeletonText(lastUsedName)
         showSkeletonIcon(lastUsedIcon)
         appList.adapter = AppAdapter(emptyList())
+
+        insightService = DashboardInsightService(
+            context = requireContext(),
+            database = AppRoomDatabase.getInstance(requireContext())
+        )
 
         insightBody.text = "Insights will appear after the first daily sync stores a full day of usage."
         viewLifecycleOwner.lifecycleScope.launch {
@@ -82,13 +91,23 @@ class DashboardFragment : Fragment() {
             lastUsedName.background = null
             bindAppIcon(lastUsedIcon, dashboardData.lastUsedPackage)
             appList.adapter = AppAdapter(dashboardData.usageItems)
-
-            val insightService = DashboardInsightService(
-                context = requireContext(),
-                database = AppRoomDatabase.getInstance(requireContext())
-            )
-            insightBody.text = insightService.getLatestInsight()
         }
+    }
+
+    override fun onResume(){
+        super.onResume()
+
+        val sharedPref = requireContext().getSharedPreferences("app_settings", android.content.Context.MODE_PRIVATE)
+        val isAiInsightsEnabled = sharedPref.getBoolean("ai_insights_enabled", false)
+
+        if (isAiInsightsEnabled) {
+                viewLifecycleOwner.lifecycleScope.launch {
+                insightBody.text = insightService.getLatestInsight()
+            }
+        } else {
+            insightBody.text = "Turn on the AI insights option"
+        }
+
     }
 
 

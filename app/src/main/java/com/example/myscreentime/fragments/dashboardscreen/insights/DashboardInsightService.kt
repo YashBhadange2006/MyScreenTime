@@ -39,6 +39,7 @@ class DashboardInsightService(
                 return@withContext "$localFallback\n\nAdd GROQ_API_KEY to local.properties to enable Groq insights."
             }
 
+
             fetchGroqInsight(
                 apiKey = apiKey,
                 latestDate = latestDate,
