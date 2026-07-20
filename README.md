@@ -1,5 +1,9 @@
 # MyScreenTime App
 
+<p align="center">
+  <img src="img/app_logo.png" width="120" />
+</p>
+
 ![License](https://img.shields.io/github/license/YashBhadange2006/MyScreenTime)
 ![Kotlin](https://img.shields.io/badge/Kotlin-100%25-7F52FF?logo=kotlin&logoColor=white)
 ![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white)
