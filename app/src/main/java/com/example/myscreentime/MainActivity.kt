@@ -6,6 +6,7 @@ import android.view.View
 import androidx.navigation.ui.setupWithNavController
 import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
 import androidx.core.view.isVisible
@@ -19,6 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var bottomNavigation: BottomNavigationView
 
     override fun onCreate(savedInstanceState: Bundle?) {
+        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_main)
@@ -64,7 +66,10 @@ class MainActivity : AppCompatActivity() {
 
         if (!hasPermission && currentDestinationId != R.id.permissionFragment) {
             navController.navigate(R.id.permissionFragment, null, clearBackStackOptions())
-        } else if (hasPermission && currentDestinationId == R.id.permissionFragment) {
+        } else if (
+            hasPermission &&
+            (currentDestinationId == null || currentDestinationId == R.id.permissionFragment)
+        ) {
             navController.navigate(R.id.dashboardFragment, null, clearBackStackOptions())
         }
     }

@@ -21,7 +21,9 @@ import com.example.myscreentime.fragments.permissionscreen.getMostUsedApp
 import com.example.myscreentime.fragments.permissionscreen.getSortedUsedApps
 import com.example.myscreentime.fragments.permissionscreen.getTodayScreenTime
 import com.example.myscreentime.roomdb.AppRoomDatabase
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 class DashboardFragment : Fragment() {
 
@@ -39,45 +41,43 @@ class DashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val totalTime = getTodayScreenTime(requireContext())
         val tvTotalScreenTime = view.findViewById<TextView>(R.id.total_screen_textview)
-        tvTotalScreenTime.text = formatTime(totalTime)
-
-        val mostUsed = getMostUsedApp(requireContext())
-        val lastUsed = getLastUsedApp(requireContext())
-
-        val app_name_most = mostUsed?.packageName?.let(::resolveAppName)
-        val app_name_last = lastUsed?.packageName?.let(::resolveAppName)
-
         val mostUsedCard = view.findViewById<View>(R.id.most_used_app_card)
         val mostUsedIcon = mostUsedCard.findViewById<ImageView>(R.id.iv_app_icon)
         val mostUsedTitle = mostUsedCard.findViewById<TextView>(R.id.text_above_app_name)
         val mostUsedName = mostUsedCard.findViewById<TextView>(R.id.tv_app_name)
-
         val lastUsedCard = view.findViewById<View>(R.id.last_used_app_card)
         val lastUsedIcon = lastUsedCard.findViewById<ImageView>(R.id.iv_app_icon)
         val lastUsedTitle = lastUsedCard.findViewById<TextView>(R.id.text_above_app_name)
         val lastUsedName = lastUsedCard.findViewById<TextView>(R.id.tv_app_name)
         val insightCard = view.findViewById<View>(R.id.insight_card)
         val insightBody = insightCard.findViewById<TextView>(R.id.insight_body)
-
-        mostUsedTitle.text = "Most Used App"
-        mostUsedName.text = app_name_most ?: "No app data"
-        bindAppIcon(mostUsedIcon, mostUsed?.packageName)
-
-        lastUsedTitle.text = "Last Used App"
-        lastUsedName.text = app_name_last ?: "No app data"
-        bindAppIcon(lastUsedIcon, lastUsed?.packageName)
-
         val appList = view.findViewById<RecyclerView>(R.id.app_list)
         appList.layoutManager = LinearLayoutManager(requireContext())
         appList.setHasFixedSize(true)
         appList.isNestedScrollingEnabled = false
         (appList.itemAnimator as? SimpleItemAnimator)?.supportsChangeAnimations = false
-        appList.adapter = AppAdapter(buildUsageItems())
+
+        tvTotalScreenTime.text = "Loading..."
+        mostUsedTitle.text = "Most Used App"
+        mostUsedName.text = "Loading..."
+        lastUsedTitle.text = "Last Used App"
+        lastUsedName.text = "Loading..."
+        appList.adapter = AppAdapter(emptyList())
 
         insightBody.text = "Insights will appear after the first daily sync stores a full day of usage."
         viewLifecycleOwner.lifecycleScope.launch {
+            val dashboardData = withContext(Dispatchers.IO) {
+                buildDashboardData()
+            }
+
+            tvTotalScreenTime.text = formatTime(dashboardData.totalTime)
+            mostUsedName.text = dashboardData.mostUsedName ?: "No app data"
+            bindAppIcon(mostUsedIcon, dashboardData.mostUsedPackage)
+            lastUsedName.text = dashboardData.lastUsedName ?: "No app data"
+            bindAppIcon(lastUsedIcon, dashboardData.lastUsedPackage)
+            appList.adapter = AppAdapter(dashboardData.usageItems)
+
             val insightService = DashboardInsightService(
                 context = requireContext(),
                 database = AppRoomDatabase.getInstance(requireContext())
@@ -144,4 +144,28 @@ class DashboardFragment : Fragment() {
     private fun formatUsageLabel(usageEntry: AppUsageEntry): String {
         return formatTime(usageEntry.totalTimeInForeground)
     }
+
+    private fun buildDashboardData(): DashboardData {
+        val totalTime = getTodayScreenTime(requireContext())
+        val mostUsed = getMostUsedApp(requireContext())
+        val lastUsed = getLastUsedApp(requireContext())
+
+        return DashboardData(
+            totalTime = totalTime,
+            mostUsedPackage = mostUsed?.packageName,
+            mostUsedName = mostUsed?.packageName?.let(::resolveAppName),
+            lastUsedPackage = lastUsed?.packageName,
+            lastUsedName = lastUsed?.packageName?.let(::resolveAppName),
+            usageItems = buildUsageItems()
+        )
+    }
 }
+
+private data class DashboardData(
+    val totalTime: Long,
+    val mostUsedPackage: String?,
+    val mostUsedName: String?,
+    val lastUsedPackage: String?,
+    val lastUsedName: String?,
+    val usageItems: List<RowItem>
+)
