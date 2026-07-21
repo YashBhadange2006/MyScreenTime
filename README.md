@@ -14,6 +14,18 @@ An Android app for tracking screen time and app usage, with AI-generated insight
 
 Status: early stage. This repo currently has the initial setup and this README, no screens or database code yet. Structure and plans below are subject to change as the project takes shape.
 
+## Screenshots
+
+<p align="center">
+  <kbd><img src="img/img1.png" width="200" align="top" /></kbd>
+  <kbd><img src="img/img2.png" width="200" align="top" /></kbd>
+  <kbd><img src="img/img6.png" width="200" align="top" /></kbd>
+</p>
+<p align="center">
+  <kbd><img src="img/img4.png" width="200" align="top" /></kbd>
+  <kbd><img src="img/img7.png" width="200" align="top" /></kbd>
+</p>
+
 ## Why
 
 Most screen time apps just show you a pie chart and leave it there. The idea here is to go one step further: take the raw usage data and have an LLM summarize it into something actually useful, "you've been on Instagram 40% more this week than last," that kind of thing, plus let users set limits and get notified when they're blown past.
@@ -36,18 +48,6 @@ Most screen time apps just show you a pie chart and leave it there. The idea her
 ## Permissions
 
 Will require Usage Access permission (`PACKAGE_USAGE_STATS`) to read app usage stats. Nothing gets sent off-device without the user triggering it.
-
-## Screenshots
-
-<p align="center">
-  <img src="img/img1.png" width="200" align="top" />
-  <img src="img/img2.png" width="200" align="top" />
-  <img src="img/img6.png" width="200" align="top" />
-</p>
-<p align="center">
-  <img src="img/img4.png" width="200" align="top" />
-  <img src="img/img7.png" width="200" align="top" />
-</p>
 
 ## Setup
 
