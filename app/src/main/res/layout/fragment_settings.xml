@@ -2,319 +2,335 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools">
-<androidx.core.widget.NestedScrollView
-    android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@color/new_white"
-    android:clipToPadding="false"
-    android:fillViewport="true"
-    android:overScrollMode="never"
-    tools:context=".fragments.SettingsFragment">
 
-    <LinearLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingStart="18dp"
-        android:paddingTop="16dp"
-        android:paddingEnd="18dp"
-        android:paddingBottom="28dp">
+        android:layout_height="match_parent"
+        android:background="@color/new_white"
+        tools:context=".fragments.SettingsFragment">
 
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/settings_top_app_bar"
-            android:layout_width="match_parent"
-            android:layout_height="72dp"
-            android:backgroundTint="#EEF4FF"
-            android:elevation="0dp"
-            android:paddingStart="18dp"
-            android:paddingEnd="18dp"
-            app:logo="@drawable/baseline_settings_24"
-            app:logoDescription="Settings"
-            app:subtitle="Preferences and controls"
-            app:subtitleTextColor="#5B6B7F"
-            app:title="Settings"
-            app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge"
-            app:titleTextColor="#102A43" />
-
-        <LinearLayout
+        <com.google.android.material.appbar.AppBarLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="22dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+            android:background="@android:color/transparent"
+            app:elevation="0dp">
 
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/ic_timer_outline" />
-
-            <TextView
-                android:layout_width="wrap_content"
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/settings_top_app_bar"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Daily Screen Time Goal"
-                android:textColor="#111827"
-                android:textSize="20sp"
-                android:fontFamily="sans-serif-medium" />
+                android:backgroundTint="#EEF4FF"
+                android:elevation="0dp"
+                android:paddingStart="18dp"
+                android:paddingEnd="18dp"
+                app:logo="@drawable/baseline_settings_24"
+                app:logoDescription="Settings"
+                app:subtitle="Preferences and controls"
+                app:subtitleTextColor="#5B6B7F"
+                app:title="Settings"
+                app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge"
+                app:titleTextColor="#102A43" />
 
-        </LinearLayout>
+        </com.google.android.material.appbar.AppBarLayout>
 
-        <com.google.android.material.card.MaterialCardView
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="0dp"
-            app:strokeColor="#EEF0F4"
-            app:strokeWidth="1dp">
+            android:layout_height="match_parent"
+            android:clipToPadding="false"
+            android:fillViewport="true"
+            android:overScrollMode="never"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:orientation="vertical"
-                android:padding="22dp">
+                android:paddingStart="18dp"
+                android:paddingTop="16dp"
+                android:paddingEnd="18dp"
+                android:paddingBottom="28dp">
 
                 <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:gravity="center_vertical"
-                    android:orientation="horizontal">
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="Limit set to"
-                        android:textColor="#334155"
-                        android:textSize="15sp" />
-
-                    <TextView
-                        android:id="@+id/set_limit_time"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="4h 00m"
-                        android:textColor="#0B63CE"
-                        android:textSize="22sp"
-                        android:fontFamily="sans-serif-medium" />
-
-                </LinearLayout>
-
-                <com.google.android.material.slider.Slider
-                    android:id="@+id/screen_time_goal_slider"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:layout_marginTop="22dp"
-                    android:value="4"
-                    android:valueFrom="0"
-                    android:valueTo="24"
-                    android:stepSize="0.5"
-                    app:haloColor="#330B63CE"
-                    app:thumbColor="#0B63CE"
-                    app:trackColorActive="#0B63CE"
-                    app:trackColorInactive="#D8E4F6" />
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
                     android:orientation="horizontal">
 
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:text="0h"
-                        android:textColor="#64748B"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="center"
-                        android:text="12h"
-                        android:textColor="#64748B"
-                        android:textSize="12sp" />
-
-                    <TextView
-                        android:layout_width="0dp"
-                        android:layout_height="wrap_content"
-                        android:layout_weight="1"
-                        android:gravity="end"
-                        android:text="24h"
-                        android:textColor="#64748B"
-                        android:textSize="12sp" />
-
-                </LinearLayout>
-
-                <com.google.android.material.button.MaterialButton
-                    android:id="@+id/btn_set_goal"
-                    android:layout_width="match_parent"
-                    android:layout_height="56dp"
-                    android:layout_marginTop="20dp"
-                    android:text="Set Goal"
-                    android:textAllCaps="false"
-                    android:textSize="16sp"
-                    android:fontFamily="sans-serif-medium"
-                    app:cornerRadius="16dp"
-                    android:backgroundTint="#0B63CE"
-                    android:textColor="#FFFFFF" />
-
-            </LinearLayout>
-
-        </com.google.android.material.card.MaterialCardView>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/ic_ai_outline" />
-
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="AI Settings"
-                android:textColor="#111827"
-                android:textSize="20sp"
-                android:fontFamily="sans-serif-medium" />
-
-        </LinearLayout>
-
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="0dp"
-            app:strokeColor="#EEF0F4"
-            app:strokeWidth="1dp">
-
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="22dp">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_timer_outline" />
 
                     <TextView
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Enable AI Insights"
+                        android:layout_marginStart="8dp"
+                        android:text="Daily Screen Time Goal"
                         android:textColor="#111827"
-                        android:textSize="16sp"
+                        android:textSize="20sp"
                         android:fontFamily="sans-serif-medium" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:lineSpacingExtra="2dp"
-                        android:text="Get personalized tips based on your usage patterns."
-                        android:textColor="#475569"
-                        android:textSize="13sp" />
 
                 </LinearLayout>
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/ai_insights_switch"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:checked="true" />
+                    android:layout_marginTop="14dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#EEF0F4"
+                    app:strokeWidth="1dp">
 
-            </LinearLayout>
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:orientation="vertical"
+                        android:padding="22dp">
 
-        </com.google.android.material.card.MaterialCardView>
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:gravity="center_vertical"
+                            android:orientation="horizontal">
 
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="28dp"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="Limit set to"
+                                android:textColor="#334155"
+                                android:textSize="15sp" />
 
-            <ImageView
-                android:layout_width="22dp"
-                android:layout_height="22dp"
-                android:src="@drawable/ic_notification_outline" />
+                            <TextView
+                                android:id="@+id/set_limit_time"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="4h 00m"
+                                android:textColor="#0B63CE"
+                                android:textSize="22sp"
+                                android:fontFamily="sans-serif-medium" />
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Notifications"
-                android:textColor="#111827"
-                android:textSize="20sp"
-                android:fontFamily="sans-serif-medium" />
+                        </LinearLayout>
 
-        </LinearLayout>
+                        <com.google.android.material.slider.Slider
+                            android:id="@+id/screen_time_goal_slider"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="22dp"
+                            android:value="4"
+                            android:valueFrom="0"
+                            android:valueTo="24"
+                            android:stepSize="0.5"
+                            app:haloColor="#330B63CE"
+                            app:thumbColor="#0B63CE"
+                            app:trackColorActive="#0B63CE"
+                            app:trackColorInactive="#D8E4F6" />
 
-        <com.google.android.material.card.MaterialCardView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="14dp"
-            app:cardBackgroundColor="#FFFFFF"
-            app:cardCornerRadius="24dp"
-            app:cardElevation="0dp"
-            app:strokeColor="#EEF0F4"
-            app:strokeWidth="1dp">
+                        <LinearLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:orientation="horizontal">
 
-            <LinearLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:gravity="center_vertical"
-                android:orientation="horizontal"
-                android:padding="22dp">
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:text="0h"
+                                android:textColor="#64748B"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="center"
+                                android:text="12h"
+                                android:textColor="#64748B"
+                                android:textSize="12sp" />
+
+                            <TextView
+                                android:layout_width="0dp"
+                                android:layout_height="wrap_content"
+                                android:layout_weight="1"
+                                android:gravity="end"
+                                android:text="24h"
+                                android:textColor="#64748B"
+                                android:textSize="12sp" />
+
+                        </LinearLayout>
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btn_set_goal"
+                            android:layout_width="match_parent"
+                            android:layout_height="56dp"
+                            android:layout_marginTop="20dp"
+                            android:text="Set Goal"
+                            android:textAllCaps="false"
+                            android:textSize="16sp"
+                            android:fontFamily="sans-serif-medium"
+                            app:cornerRadius="16dp"
+                            android:backgroundTint="#0B63CE"
+                            android:textColor="#FFFFFF" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
                 <LinearLayout
-                    android:layout_width="0dp"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:orientation="vertical">
+                    android:layout_marginTop="28dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_ai_outline" />
 
                     <TextView
-                        android:layout_width="match_parent"
+                        android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="Notify when screen time exceeds daily goal"
+                        android:layout_marginStart="8dp"
+                        android:text="AI Settings"
                         android:textColor="#111827"
-                        android:textSize="16sp"
+                        android:textSize="20sp"
                         android:fontFamily="sans-serif-medium" />
-
-                    <TextView
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="5dp"
-                        android:lineSpacingExtra="2dp"
-                        android:text="Real-time alerts to keep you on track."
-                        android:textColor="#475569"
-                        android:textSize="13sp" />
 
                 </LinearLayout>
 
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/daily_goal_alert_switch"
-                    android:layout_width="wrap_content"
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:checked="true" />
+                    android:layout_marginTop="14dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#EEF0F4"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="22dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:text="Enable AI Insights"
+                                android:textColor="#111827"
+                                android:textSize="16sp"
+                                android:fontFamily="sans-serif-medium" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:lineSpacingExtra="2dp"
+                                android:text="Get personalized tips based on your usage patterns."
+                                android:textColor="#475569"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/ai_insights_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="28dp"
+                    android:gravity="center_vertical"
+                    android:orientation="horizontal">
+
+                    <ImageView
+                        android:layout_width="22dp"
+                        android:layout_height="22dp"
+                        android:src="@drawable/ic_notification_outline" />
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="8dp"
+                        android:text="Notifications"
+                        android:textColor="#111827"
+                        android:textSize="20sp"
+                        android:fontFamily="sans-serif-medium" />
+
+                </LinearLayout>
+
+                <com.google.android.material.card.MaterialCardView
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="14dp"
+                    app:cardBackgroundColor="#FFFFFF"
+                    app:cardCornerRadius="24dp"
+                    app:cardElevation="0dp"
+                    app:strokeColor="#EEF0F4"
+                    app:strokeWidth="1dp">
+
+                    <LinearLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal"
+                        android:padding="22dp">
+
+                        <LinearLayout
+                            android:layout_width="0dp"
+                            android:layout_height="wrap_content"
+                            android:layout_weight="1"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:text="Notify when screen time exceeds daily goal"
+                                android:textColor="#111827"
+                                android:textSize="16sp"
+                                android:fontFamily="sans-serif-medium" />
+
+                            <TextView
+                                android:layout_width="match_parent"
+                                android:layout_height="wrap_content"
+                                android:layout_marginTop="5dp"
+                                android:lineSpacingExtra="2dp"
+                                android:text="Real-time alerts to keep you on track."
+                                android:textColor="#475569"
+                                android:textSize="13sp" />
+
+                        </LinearLayout>
+
+                        <com.google.android.material.switchmaterial.SwitchMaterial
+                            android:id="@+id/daily_goal_alert_switch"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:checked="true" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
 
             </LinearLayout>
 
-        </com.google.android.material.card.MaterialCardView>
+        </androidx.core.widget.NestedScrollView>
 
-    </LinearLayout>
-
-</androidx.core.widget.NestedScrollView>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 </layout>
