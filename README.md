@@ -40,13 +40,13 @@ Will require Usage Access permission (`PACKAGE_USAGE_STATS`) to read app usage s
 ## Screenshots
 
 <p align="center">
-  <img src="img/img1.png" width="200" />
-  <img src="img/img2.png" width="200" />
-  <img src="img/img6.png" width="200" />
+  <img src="img/img1.png" width="200" align="top" />
+  <img src="img/img2.png" width="200" align="top" />
+  <img src="img/img6.png" width="200" align="top" />
 </p>
 <p align="center">
-  <img src="img/img4.png" width="200" />
-  <img src="img/img7.png" width="200" />
+  <img src="img/img4.png" width="200" align="top" />
+  <img src="img/img7.png" width="200" align="top" />
 </p>
 
 ## Setup
