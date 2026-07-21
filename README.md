@@ -16,15 +16,28 @@ Status: early stage. This repo currently has the initial setup and this README, 
 
 ## Screenshots
 
-<p align="center">
-  <kbd><img src="img/img1.png" width="200" align="top" /></kbd>
-  <kbd><img src="img/img2.png" width="200" align="top" /></kbd>
-  <kbd><img src="img/img6.png" width="200" align="top" /></kbd>
-</p>
-<p align="center">
-  <kbd><img src="img/img4.png" width="200" align="top" /></kbd>
-  <kbd><img src="img/img7.png" width="200" align="top" /></kbd>
-</p>
+<table align="center">
+  <tr>
+    <td align="center" valign="top">
+      <kbd><img src="img/img1.png" width="200" /></kbd>
+    </td>
+    <td align="center" valign="top">
+      <kbd><img src="img/img2.png" width="200" /></kbd>
+    </td>
+    <td align="center" valign="top">
+      <kbd><img src="img/img6.png" width="200" /></kbd>
+    </td>
+  </tr>
+  <tr>
+    <td align="center" valign="top">
+      <kbd><img src="img/img4.png" width="200" /></kbd>
+    </td>
+    <td align="center" valign="top">
+      <kbd><img src="img/img7.png" width="200" /></kbd>
+    </td>
+    <td></td>
+  </tr>
+</table>
 
 ## Why
 
