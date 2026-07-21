@@ -42,11 +42,11 @@ Will require Usage Access permission (`PACKAGE_USAGE_STATS`) to read app usage s
 <p align="center">
   <img src="img/img1.png" width="200" />
   <img src="img/img2.png" width="200" />
-  <img src="img/img3.png" width="200" />
+  <img src="img/img6.png" width="200" />
 </p>
 <p align="center">
   <img src="img/img4.png" width="200" />
-  <img src="img/img5.png" width="200" />
+  <img src="img/img7.png" width="200" />
 </p>
 
 ## Setup
