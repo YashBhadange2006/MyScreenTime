@@ -130,6 +130,7 @@ class DailyUsageSyncWorker(
                 val cutoffDate = getCutoffDate(daysToKeep = 30)
                 dao.deleteOldAppUsage(cutoffDate)
                 dao.deleteOldTotalUsage(cutoffDate)
+                dao.deleteOldActivityData(cutoffDate)
             }
         }
     }

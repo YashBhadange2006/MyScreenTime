@@ -2,6 +2,7 @@ package com.example.myscreentime
 
 import android.os.Build
 import android.os.Bundle
+import android.content.Intent
 import android.view.View
 import androidx.navigation.ui.setupWithNavController
 import androidx.activity.enableEdgeToEdge
@@ -13,6 +14,8 @@ import androidx.core.view.isVisible
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.NavHostFragment
 import com.example.myscreentime.fragments.permissionscreen.hasUsageStatsPermission
+import com.example.myscreentime.fragments.wellbeingscreen.ActivityClassificationService
+import androidx.core.content.ContextCompat
 import com.google.android.material.bottomnavigation.BottomNavigationView
 
 class MainActivity : AppCompatActivity() {
@@ -41,6 +44,7 @@ class MainActivity : AppCompatActivity() {
         }
         navController.setGraph(navGraph, null)
         bottomNavigation.setupWithNavController(navController)
+        startActivityClassificationService()
         navController.addOnDestinationChangedListener { _, destination, _ ->
             bottomNavigation.isVisible = destination.id != R.id.permissionFragment
         }
@@ -55,6 +59,13 @@ class MainActivity : AppCompatActivity() {
             v.setPadding(v.paddingLeft, v.paddingTop, v.paddingRight, systemBars.bottom)
             insets
         }
+    }
+
+    private fun startActivityClassificationService() {
+        ContextCompat.startForegroundService(
+            this,
+            Intent(this, ActivityClassificationService::class.java)
+        )
     }
 
     override fun onResume() {

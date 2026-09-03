@@ -61,6 +61,11 @@ class ActivityClassifier(
         sensorManager.unregisterListener(this)
     }
 
+    fun close() {
+        stop()
+        interpreter.close()
+    }
+
     override fun onSensorChanged(event: SensorEvent) {
         when (event.sensor.type) {
             Sensor.TYPE_LINEAR_ACCELERATION -> {

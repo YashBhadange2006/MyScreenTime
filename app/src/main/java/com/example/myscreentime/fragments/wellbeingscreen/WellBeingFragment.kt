@@ -9,21 +9,20 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
+import com.example.myscreentime.roomdb.AppRoomDatabase
+import com.example.myscreentime.roomdb.ActivityDataEntity
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 import com.example.myscreentime.R
 
 class WellBeingFragment : Fragment() {
-
-    private var classifier: ActivityClassifier? = null
-
-    private var currentLabel = mutableStateOf("Waiting for data...")
-    private var currentConfidence = mutableStateOf(0f)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -34,36 +33,37 @@ class WellBeingFragment : Fragment() {
         val composeView = view.findViewById<ComposeView>(R.id.wellBeingComposeView)
         composeView.setContent {
             MaterialTheme {
-                WellBeingScreen(currentLabel.value, currentConfidence.value)
-            }
-        }
-
-        classifier = ActivityClassifier(requireContext()) { label, confidence ->
-            requireActivity().runOnUiThread {
-                currentLabel.value = label
-                currentConfidence.value = confidence
+                val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
+                val liveActivity by ActivityClassificationService.latestActivity.collectAsState()
+                val activityData by AppRoomDatabase.getInstance(requireContext()).usageDao()
+                    .observeActivityDataForDate(date)
+                    .collectAsState(initial = null)
+                WellBeingScreen(liveActivity, activityData)
             }
         }
 
         return view
     }
 
-    override fun onResume() {
-        super.onResume()
-        classifier?.start()
-    }
-
-    override fun onPause() {
-        super.onPause()
-        classifier?.stop()
-    }
 }
 
 @Composable
-fun WellBeingScreen(label: String, confidence: Float) {
+fun WellBeingScreen(liveActivity: String, activityData: ActivityDataEntity?) {
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Detected activity:")
-        Text(text = label)
-        Text(text = "Confidence: ${"%.2f".format(confidence * 100)}%")
+        Text(text = "Live activity: $liveActivity")
+        Text(text = "Today's activity")
+        if (activityData == null) {
+            Text(text = "Collecting activity data…")
+        } else {
+            Text(text = "Walking: ${formatDuration(activityData.walkingMs)}")
+            Text(text = "Walking upstairs: ${formatDuration(activityData.walkingUpstairsMs)}")
+            Text(text = "Walking downstairs: ${formatDuration(activityData.walkingDownstairsMs)}")
+            Text(text = "Sitting: ${formatDuration(activityData.sittingMs)}")
+            Text(text = "Standing: ${formatDuration(activityData.standingMs)}")
+            Text(text = "Laying: ${formatDuration(activityData.layingMs)}")
+        }
     }
 }
+
+private fun formatDuration(durationMs: Long): String =
+    "${durationMs / 60_000} min"
