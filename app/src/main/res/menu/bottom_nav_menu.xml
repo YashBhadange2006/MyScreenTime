@@ -7,6 +7,11 @@
         android:title="Dashboard"/>
 
     <item
+        android:id="@+id/wellBeingFragment"
+        android:icon="@drawable/baseline_settings_24"
+        android:title="Well Being"/>
+
+    <item
         android:id="@+id/settingsFragment"
         android:icon="@drawable/baseline_settings_24"
         android:title="Settings"/>

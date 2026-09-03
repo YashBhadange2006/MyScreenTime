@@ -13,6 +13,10 @@ app:startDestination="@id/permissionFragment">
     android:id="@+id/dashboardFragment"
     android:name="com.example.myscreentime.fragments.dashboardscreen.DashboardFragment"
     android:label="Dashboard" />
+    <fragment
+        android:id="@+id/wellBeingFragment"
+        android:name="com.example.myscreentime.fragments.wellbeingscreen.WellBeingFragment"
+        android:label="Well Being" />
 
 <fragment
     android:id="@+id/settingsFragment"

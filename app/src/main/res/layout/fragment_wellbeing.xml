@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/new_white"
+    tools:context=".fragments.wellbeingscreen.WellBeingFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@android:color/transparent"
+        app:elevation="0dp">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/wellbeing_top_app_bar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="16dp"
+            android:backgroundTint="#EEF4FF"
+            app:navigationIcon="@drawable/baseline_settings_24"
+            app:navigationIconTint="#1E3A5F"
+            app:title="Well Being"
+            app:subtitle="Monitor your digital health"
+            app:titleCentered="false"
+            app:contentInsetStartWithNavigation="24dp"
+            app:titleTextAppearance="@style/TextAppearance.Material3.TitleLarge"
+            app:titleTextColor="#102A43"
+            app:subtitleTextAppearance="@style/TextAppearance.Material3.BodyMedium"
+            app:subtitleTextColor="#5B6B7F" />
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.compose.ui.platform.ComposeView
+        android:id="@+id/wellBeingComposeView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

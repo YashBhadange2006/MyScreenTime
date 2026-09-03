@@ -4,6 +4,7 @@ plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlinAndroid)
     alias(libs.plugins.kotlinKapt)
+    alias(libs.plugins.kotlinCompose)
 }
 
 android {
@@ -18,16 +19,12 @@ android {
     val groqApiKey = localProperties.getProperty("GROQ_API_KEY", "")
 
     namespace = "com.example.myscreentime"
-    compileSdk {
-        version = release(36) {
-            minorApiLevel = 1
-        }
-    }
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.example.myscreentime"
         minSdk = 24
-        targetSdk = 36
+        targetSdk = 37
         versionCode = 1
         versionName = "1.0"
 
@@ -50,6 +47,7 @@ android {
     buildFeatures {
         buildConfig = true
         dataBinding = true
+        compose = true
     }
     compileOptions {
         sourceCompatibility = JavaVersion.VERSION_11
@@ -57,6 +55,9 @@ android {
     }
     kotlinOptions {
         jvmTarget = "11"
+    }
+    androidResources{
+        noCompress += "tflite"
     }
 }
 
@@ -73,6 +74,15 @@ dependencies {
     implementation("androidx.room:room-ktx:2.8.4")
     kapt("androidx.room:room-compiler:2.8.4")
     implementation("androidx.work:work-runtime-ktx:2.10.0")
+
+    // Jetpack Compose dependencies
+    implementation("androidx.compose.ui:ui:1.12.0")
+    implementation("androidx.compose.material3:material3:1.4.0")
+    implementation("androidx.compose.ui:ui-tooling-preview:1.12.0")
+
+    // tensorflow dependency
+    implementation("com.google.ai.edge.litert:litert:2.1.0")
+
     implementation(libs.material)
     testImplementation(libs.junit)
     androidTestImplementation(libs.androidx.espresso.core)
