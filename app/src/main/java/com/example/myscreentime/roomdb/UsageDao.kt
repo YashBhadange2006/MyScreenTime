@@ -43,6 +43,9 @@ interface UsageDao {
     @Query("SELECT * FROM activity_data_table WHERE date = :date LIMIT 1")
     fun observeActivityDataForDate(date: String): Flow<ActivityDataEntity?>
 
+    @Query("SELECT * FROM activity_data_table WHERE date >= :startDate")
+    fun observeActivityDataFrom(startDate: String): Flow<List<ActivityDataEntity>>
+
     @Query("""
         UPDATE activity_data_table SET
             walkingMs = walkingMs + :walkingMs,

@@ -15,14 +15,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.ComposeView
 import androidx.compose.ui.unit.dp
 import androidx.fragment.app.Fragment
-import com.example.myscreentime.roomdb.AppRoomDatabase
-import com.example.myscreentime.roomdb.ActivityDataEntity
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
+import androidx.fragment.app.viewModels
 import com.example.myscreentime.R
 
 class WellBeingFragment : Fragment() {
+
+    private val viewModel: WellBeingViewModel by viewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -33,12 +31,8 @@ class WellBeingFragment : Fragment() {
         val composeView = view.findViewById<ComposeView>(R.id.wellBeingComposeView)
         composeView.setContent {
             MaterialTheme {
-                val date = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-                val liveActivity by ActivityClassificationService.latestActivity.collectAsState()
-                val activityData by AppRoomDatabase.getInstance(requireContext()).usageDao()
-                    .observeActivityDataForDate(date)
-                    .collectAsState(initial = null)
-                WellBeingScreen(liveActivity, activityData)
+                val uiState by viewModel.uiState.collectAsState()
+                WellBeingScreen(uiState)
             }
         }
 
@@ -48,20 +42,18 @@ class WellBeingFragment : Fragment() {
 }
 
 @Composable
-fun WellBeingScreen(liveActivity: String, activityData: ActivityDataEntity?) {
+fun WellBeingScreen(uiState: WellBeingUiState) {
+    val state = uiState as? WellBeingUiState.Success ?: return
+
     Column(modifier = Modifier.padding(16.dp)) {
-        Text(text = "Live activity: $liveActivity")
+        Text(text = "Live activity: ${state.liveActivity}")
         Text(text = "Today's activity")
-        if (activityData == null) {
-            Text(text = "Collecting activity data…")
-        } else {
-            Text(text = "Walking: ${formatDuration(activityData.walkingMs)}")
-            Text(text = "Walking upstairs: ${formatDuration(activityData.walkingUpstairsMs)}")
-            Text(text = "Walking downstairs: ${formatDuration(activityData.walkingDownstairsMs)}")
-            Text(text = "Sitting: ${formatDuration(activityData.sittingMs)}")
-            Text(text = "Standing: ${formatDuration(activityData.standingMs)}")
-            Text(text = "Laying: ${formatDuration(activityData.layingMs)}")
-        }
+        Text(text = "Walking: ${formatDuration(state.walkingMs)}")
+        Text(text = "Walking upstairs: ${formatDuration(state.walkingUpstairsMs)}")
+        Text(text = "Walking downstairs: ${formatDuration(state.walkingDownstairsMs)}")
+        Text(text = "Sitting: ${formatDuration(state.sittingMs)}")
+        Text(text = "Standing: ${formatDuration(state.standingMs)}")
+        Text(text = "Laying: ${formatDuration(state.layingMs)}")
     }
 }
 
