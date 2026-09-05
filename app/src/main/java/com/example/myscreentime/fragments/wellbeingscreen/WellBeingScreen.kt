@@ -3,6 +3,7 @@ package com.example.myscreentime.fragments.wellbeingscreen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.foundation.lazy.LazyRow
@@ -26,42 +27,14 @@ fun WellBeingScreen(uiState: WellBeingUiState) {
             .fillMaxSize()
             .background(Color(0xFFF8F9FE))
             .verticalScroll(rememberScrollState())
-            .padding(20.dp)
+            .padding(16.dp)
     ) {
-        LiveActivityCard(state.liveActivity)
-        
-        Spacer(modifier = Modifier.height(24.dp))
         ActivityBalanceCard(state)
         
-        Spacer(modifier = Modifier.height(24.dp))
+        Spacer(modifier = Modifier.height(16.dp))
         ActivityTrendsSection(state.weeklyActivity)
         
-        Spacer(modifier = Modifier.height(40.dp))
-    }
-}
-
-@Composable
-fun LiveActivityCard(activity: String) {
-    Card(
-        modifier = Modifier.fillMaxWidth(),
-        shape = RoundedCornerShape(24.dp),
-        colors = CardDefaults.cardColors(containerColor = Color.White),
-        elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
-    ) {
-        Column(modifier = Modifier.padding(24.dp)) {
-            Text(
-                text = "Live Activity",
-                style = MaterialTheme.typography.bodyMedium,
-                color = Color.Gray
-            )
-            Spacer(modifier = Modifier.height(8.dp))
-            Text(
-                text = activity,
-                style = MaterialTheme.typography.headlineLarge,
-                fontWeight = FontWeight.ExtraBold,
-                color = Color.Black
-            )
-        }
+        Spacer(modifier = Modifier.height(32.dp))
     }
 }
 
@@ -74,17 +47,45 @@ fun ActivityBalanceCard(state: WellBeingUiState.Success) {
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
         Column(modifier = Modifier.padding(20.dp)) {
-            Text(
-                text = "Activity Balance",
-                style = MaterialTheme.typography.titleLarge,
-                fontWeight = FontWeight.Bold,
-                color = Color.Black
-            )
-            Text(
-                text = "Today's multi-axis posture & movement breakdown",
-                style = MaterialTheme.typography.bodySmall,
-                color = Color.Gray
-            )
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.Top
+            ) {
+                Column(modifier = Modifier.weight(1f)) {
+                    Text(
+                        text = "Activity Balance",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = Color.Black
+                    )
+                    Text(
+                        text = "Multi-axis posture breakdown",
+                        style = MaterialTheme.typography.bodySmall,
+                        color = Color.Gray
+                    )
+                    Row(
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Text(
+                            text = "Live: ",
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                        Text(
+                            text = state.liveActivity,
+                            style = MaterialTheme.typography.labelMedium,
+                            fontWeight = FontWeight.Bold,
+                            color = Color.Black
+                        )
+                    }
+                }
+
+
+
+            }
             
             val radarDataList = listOf(
                 RadarData("Walking", state.walkingMs.toFloat(), 0f),
@@ -101,11 +102,11 @@ fun ActivityBalanceCard(state: WellBeingUiState.Success) {
                 data = finalRadarData,
                 modifier = Modifier
                     .fillMaxWidth()
-                    .height(280.dp)
-                    .padding(vertical = 16.dp)
+                    .height(240.dp)
+                    .padding(vertical = 12.dp)
             )
 
-            HorizontalDivider(modifier = Modifier.padding(vertical = 16.dp), color = Color.LightGray.copy(alpha = 0.5f))
+            HorizontalDivider(modifier = Modifier.padding(vertical = 12.dp), color = Color.LightGray.copy(alpha = 0.5f))
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
@@ -116,7 +117,7 @@ fun ActivityBalanceCard(state: WellBeingUiState.Success) {
                 Text(text = "Recorded totals", style = MaterialTheme.typography.bodySmall, color = Color.Gray)
             }
             
-            Spacer(modifier = Modifier.height(16.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             
             TodayActivityGrid(state)
         }
@@ -222,7 +223,9 @@ fun ActivityTrendsSection(weeklyActivity: List<WeeklyActivity>) {
             title = selectedActivity,
             data = chartData,
             gradientColors = gradientColors,
-            modifier = Modifier.padding(vertical = 8.dp)
+            modifier = Modifier
+                .padding(vertical = 4.dp)
+                .height(340.dp) // Increased height back to accommodate larger chart
         )
     }
 }

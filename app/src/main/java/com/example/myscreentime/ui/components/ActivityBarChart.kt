@@ -45,7 +45,7 @@ fun ActivityBarChartCard(
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp),
         shape = MaterialTheme.shapes.extraLarge
     ) {
-        Column(modifier = Modifier.padding(20.dp)) {
+        Column(modifier = Modifier.padding(16.dp)) {
             Text(
                 text = title,
                 style = MaterialTheme.typography.titleLarge,
@@ -56,7 +56,7 @@ fun ActivityBarChartCard(
                 style = MaterialTheme.typography.bodySmall,
                 color = Color.Gray
             )
-            Spacer(modifier = Modifier.height(24.dp))
+            Spacer(modifier = Modifier.height(12.dp))
             ActivityBarChart(
                 data = data,
                 gradientColors = gradientColors,
