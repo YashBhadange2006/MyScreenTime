@@ -17,16 +17,25 @@ import java.util.Calendar
 class WellBeingViewModel(application: Application) : AndroidViewModel(application) {
 
     private val dao = AppRoomDatabase.getInstance(application).usageDao()
-    private val today = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date())
-    private val weekStart = Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -6) }
-    private val weekStartDate = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(weekStart.time)
 
     val uiState: StateFlow<WellBeingUiState> = combine(
         ActivityClassificationService.latestActivity,
-        dao.observeActivityDataForDate(today),
-        dao.observeActivityDataFrom(weekStartDate)
-    ) { liveActivity, activityData, weeklyRows ->
-        val todayData = activityData ?: ActivityDataEntity(today)
+        // Using a flow that emits the current date to trigger updates
+        kotlinx.coroutines.flow.flow {
+            while (true) {
+                emit(SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(Date()))
+                kotlinx.coroutines.delay(60000) // Check every minute
+            }
+        },
+        // Observe all data since 6 days ago
+        dao.observeActivityDataFrom(
+            SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(
+                Calendar.getInstance().apply { add(Calendar.DAY_OF_YEAR, -6) }.time
+            )
+        )
+    ) { liveActivity, todayDate, weeklyRows ->
+        val todayData = weeklyRows.find { it.date == todayDate } ?: ActivityDataEntity(todayDate)
+        
         WellBeingUiState.Success(
             liveActivity = liveActivity,
             walkingMs = todayData.walkingMs,
@@ -35,7 +44,7 @@ class WellBeingViewModel(application: Application) : AndroidViewModel(applicatio
             sittingMs = todayData.sittingMs,
             standingMs = todayData.standingMs,
             layingMs = todayData.layingMs,
-            weeklyActivity = buildWeeklyActivity(weeklyRows)
+            weeklyActivity = buildWeeklyActivity(todayDate, weeklyRows)
         )
     }.stateIn(
         scope = viewModelScope,
@@ -47,14 +56,20 @@ class WellBeingViewModel(application: Application) : AndroidViewModel(applicatio
         )
     )
 
-    private fun buildWeeklyActivity(rows: List<ActivityDataEntity>): List<WeeklyActivity> {
+    private fun buildWeeklyActivity(todayDate: String, rows: List<ActivityDataEntity>): List<WeeklyActivity> {
         val dateFormat = SimpleDateFormat("yyyy-MM-dd", Locale.getDefault())
         val labelFormat = SimpleDateFormat("EEE", Locale.getDefault())
         val dataByDate = rows.associateBy { it.date }
-        return (0..6).map { dayOffset ->
-            val calendar = (weekStart.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, dayOffset) }
-            val row = dataByDate[dateFormat.format(calendar.time)]
-            WeeklyActivity(
+        
+        val calendar = Calendar.getInstance().apply { 
+            time = dateFormat.parse(todayDate) ?: Date()
+            add(Calendar.DAY_OF_YEAR, -6) 
+        }
+        
+        return (0..6).map { _ ->
+            val dateStr = dateFormat.format(calendar.time)
+            val row = dataByDate[dateStr]
+            val activity = WeeklyActivity(
                 label = labelFormat.format(calendar.time),
                 walkingMs = row?.walkingMs ?: 0,
                 walkingUpstairsMs = row?.walkingUpstairsMs ?: 0,
@@ -63,6 +78,8 @@ class WellBeingViewModel(application: Application) : AndroidViewModel(applicatio
                 standingMs = row?.standingMs ?: 0,
                 layingMs = row?.layingMs ?: 0
             )
+            calendar.add(Calendar.DAY_OF_YEAR, 1)
+            activity
         }
     }
 }

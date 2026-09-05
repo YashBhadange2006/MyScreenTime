@@ -79,6 +79,7 @@ dependencies {
     implementation("androidx.compose.ui:ui:1.12.0")
     implementation("androidx.compose.material3:material3:1.4.0")
     implementation("androidx.compose.ui:ui-tooling-preview:1.12.0")
+    debugImplementation("androidx.compose.ui:ui-tooling:1.12.0")
 
     // tensorflow dependency
     implementation("com.google.ai.edge.litert:litert:2.1.0")
