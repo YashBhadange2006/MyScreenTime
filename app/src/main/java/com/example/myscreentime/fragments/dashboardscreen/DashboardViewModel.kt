@@ -19,6 +19,8 @@ import kotlin.math.abs
 
 data class DashboardData(
     val totalTime: Long,
+    val breakdownProportions: List<Float>, // Ratios of top apps to total time
+    val breakdownLabels: List<String>,     // Names of top apps
     val mostUsedPackage: String?,
     val mostUsedName: String?,
     val lastUsedPackage: String?,
@@ -75,24 +77,36 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
             percentCompText = "${String.format(Locale.getDefault(), "%.1f", percent)}% $direction than yesterday"
         }
 
+        // Calculate breakdown proportions for the top 5 apps
+        val sortedApps = getSortedUsedApps(context)
+        val topApps = sortedApps.take(5)
+        val breakdownProportions = topApps.map { 
+            if (totalTime > 0) it.totalTimeInForeground.toFloat() / totalTime.toFloat() else 0f
+        }
+        val breakdownLabels = topApps.map { resolveAppName(it.packageName) }
+
         return DashboardData(
             totalTime = totalTime,
+            breakdownProportions = breakdownProportions,
+            breakdownLabels = breakdownLabels,
             mostUsedPackage = mostUsed?.packageName,
             mostUsedName = mostUsed?.packageName?.let { resolveAppName(it) },
             lastUsedPackage = lastUsed?.packageName,
             lastUsedName = lastUsed?.packageName?.let { resolveAppName(it) },
-            usageItems = buildUsageItems(context),
+            usageItems = buildUsageItems(context, totalTime),
             percentText = percentCompText,
             isMoreThanYesterday = isMoreThanYesterday
         )
     }
 
-    private fun buildUsageItems(context: android.content.Context): List<RowItem> {
+    private fun buildUsageItems(context: android.content.Context, totalTime: Long): List<RowItem> {
         return getSortedUsedApps(context).map { usageEntry ->
+            val appProgress = if (totalTime > 0) usageEntry.totalTimeInForeground.toFloat() / totalTime.toFloat() else 0f
             RowItem(
                 packageName = usageEntry.packageName,
                 appName = resolveAppName(usageEntry.packageName),
-                usageTime = formatTime(usageEntry.totalTimeInForeground)
+                usageTime = formatTime(usageEntry.totalTimeInForeground),
+                progress = appProgress.coerceAtMost(1.0f)
             )
         }
     }

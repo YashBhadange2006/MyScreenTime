@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import com.google.android.material.progressindicator.LinearProgressIndicator
 import androidx.recyclerview.widget.RecyclerView
 import com.example.myscreentime.R
 import kotlinx.coroutines.*
@@ -25,6 +26,7 @@ class AppAdapter(private val itemList: List<RowItem>) :
 
         holder.appName.text = currentItem.appName
         holder.usageTime.text = currentItem.usageTime
+        holder.progressIndicator.progress = (currentItem.progress * 100).toInt()
 
         // Set fallback first to avoid showing wrong icon for recycled view
         holder.appIcon.setImageResource(R.drawable.ic_app_fallback)
@@ -64,6 +66,7 @@ class AppAdapter(private val itemList: List<RowItem>) :
         val appIcon: ImageView = itemView.findViewById(R.id.app_icon_row)
         val appName: TextView = itemView.findViewById(R.id.tv_app_name_row)
         val usageTime: TextView = itemView.findViewById(R.id.text_above_app_name_row)
+        val progressIndicator: LinearProgressIndicator = itemView.findViewById(R.id.app_usage_progress)
         var iconLoadJob: Job? = null
     }
 }

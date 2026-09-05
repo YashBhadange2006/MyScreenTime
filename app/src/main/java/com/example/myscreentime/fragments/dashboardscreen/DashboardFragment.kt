@@ -1,13 +1,18 @@
 package com.example.myscreentime.fragments.dashboardscreen
 
 import android.content.pm.PackageManager
+import android.content.res.ColorStateList
+import android.graphics.Color
 import android.graphics.drawable.Drawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
+import com.google.android.material.chip.Chip
+import com.google.android.material.chip.ChipGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -37,6 +42,8 @@ class DashboardFragment : Fragment() {
     private lateinit var lastUsedIcon: ImageView
     private lateinit var lastUsedName: TextView
     private lateinit var appList: RecyclerView
+    private lateinit var breakdownContainer: LinearLayout
+    private lateinit var legendContainer: ChipGroup
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,6 +56,8 @@ class DashboardFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         tvTotalScreenTime = view.findViewById(R.id.total_screen_textview)
+        breakdownContainer = view.findViewById(R.id.total_screen_breakdown_container)
+        legendContainer = view.findViewById(R.id.breakdown_legend_container)
         tvPercentComp = view.findViewById(R.id.percent_comp_textview)
         val mostUsedCard = view.findViewById<View>(R.id.most_used_app_card)
         mostUsedIcon = mostUsedCard.findViewById(R.id.iv_app_icon)
@@ -101,6 +110,7 @@ class DashboardFragment : Fragment() {
     private fun bindData(data: DashboardData) {
         tvTotalScreenTime.text = data.totalTime.let { formatTime(it) }
         tvTotalScreenTime.background = null
+        updateBreakdownBar(data.breakdownProportions, data.breakdownLabels)
         
         tvPercentComp.text = data.percentText
         tvPercentComp.setTextColor(
@@ -117,6 +127,70 @@ class DashboardFragment : Fragment() {
         loadIconAsync(lastUsedIcon, data.lastUsedPackage)
         
         appList.adapter = AppAdapter(data.usageItems)
+    }
+
+    private fun updateBreakdownBar(proportions: List<Float>, labels: List<String>) {
+        breakdownContainer.removeAllViews()
+        legendContainer.removeAllViews()
+        if (proportions.isEmpty()) return
+
+        val colors = listOf(
+            "#5856D6", // Indigo
+            "#FF9500", // Orange
+            "#34C759", // Green
+            "#007AFF", // Blue
+            "#FF2D55"  // Pink
+        )
+
+        var totalAllocated = 0f
+        proportions.forEachIndexed { index, proportion ->
+            if (proportion > 0.01f) {
+                val colorHex = colors[index % colors.size]
+                val colorInt = Color.parseColor(colorHex)
+                
+                // Add to Bar
+                val segment = View(requireContext())
+                segment.setBackgroundColor(colorInt)
+                val params = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, proportion)
+                segment.layoutParams = params
+                breakdownContainer.addView(segment)
+                
+                // Add to Legend
+                val appName = labels.getOrNull(index) ?: "App"
+                val legendItem = TextView(requireContext()).apply {
+                    text = appName
+                    setTextColor(Color.GRAY)
+                    textSize = 11f
+                    setPadding(0, 0, getDpAsPx(8f).toInt(), 0)
+                    gravity = android.view.Gravity.CENTER_VERTICAL
+                    
+                    // Add color dot
+                    val dot = android.graphics.drawable.GradientDrawable().apply {
+                        shape = android.graphics.drawable.GradientDrawable.OVAL
+                        setSize(getDpAsPx(8f).toInt(), getDpAsPx(8f).toInt())
+                        setColor(colorInt)
+                    }
+                    setCompoundDrawablesWithIntrinsicBounds(dot, null, null, null)
+                    compoundDrawablePadding = getDpAsPx(6f).toInt()
+                }
+                legendContainer.addView(legendItem)
+                
+                totalAllocated += proportion
+            }
+        }
+
+        // Fill the rest with "Others"
+        if (totalAllocated < 0.98f) {
+            val othersProportion = 1f - totalAllocated
+            val others = View(requireContext())
+            others.setBackgroundColor(Color.parseColor("#E1E4E8"))
+            others.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, othersProportion)
+            breakdownContainer.addView(others)
+        }
+    }
+
+    private fun getDpAsPx(dp: Float): Float {
+        return dp * resources.displayMetrics.density
     }
 
     private fun loadIconAsync(imageView: ImageView, packageName: String?) {

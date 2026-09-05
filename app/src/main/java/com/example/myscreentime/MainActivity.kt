@@ -42,7 +42,11 @@ class MainActivity : AppCompatActivity() {
                 }
             )
         }
-        navController.setGraph(navGraph, null)
+        
+        if (savedInstanceState == null) {
+            navController.setGraph(navGraph, null)
+        }
+        
         bottomNavigation.setupWithNavController(navController)
         startActivityClassificationService()
         navController.addOnDestinationChangedListener { _, destination, _ ->
