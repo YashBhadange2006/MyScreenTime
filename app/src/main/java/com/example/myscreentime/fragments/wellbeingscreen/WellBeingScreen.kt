@@ -160,7 +160,7 @@ fun ActivityItem(label: String, ms: Long, modifier: Modifier = Modifier, valueCo
             text = "${ms / 60_000} min",
             style = MaterialTheme.typography.bodyMedium,
             fontWeight = FontWeight.Bold,
-            color = valueColor // Durations in black or specific colors as per design (design showed orange for sitting and green for laying, but user said keep black text for totals? "not to color the todays, activity text like shown as 412min 187min jsut keep everything black text in that recorded totals")
+            color = valueColor
         )
     }
 }
