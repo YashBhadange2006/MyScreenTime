@@ -14,6 +14,7 @@ import android.widget.TextView
 import com.google.android.material.chip.Chip
 import com.google.android.material.chip.ChipGroup
 import androidx.core.content.ContextCompat
+import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.lifecycleScope
@@ -219,7 +220,8 @@ class DashboardFragment : Fragment() {
 
         if (isAiInsightsEnabled) {
             viewLifecycleOwner.lifecycleScope.launch {
-                insightBody.text = insightService.getLatestInsight()
+                val insight = insightService.getLatestInsight()
+                insightBody.text = HtmlCompat.fromHtml(insight, HtmlCompat.FROM_HTML_MODE_LEGACY)
             }
         } else {
             insightBody.text = "Turn on the AI insights option"

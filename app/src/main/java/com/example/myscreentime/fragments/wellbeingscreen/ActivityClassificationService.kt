@@ -39,7 +39,10 @@ class ActivityClassificationService : Service() {
         classifier = ActivityClassifier(this) { label, _ ->
             _latestActivity.value = label
             val currentTime = System.currentTimeMillis()
-            val duration = currentTime - lastResultTime
+            
+            val gap = currentTime - lastResultTime
+            val duration = if (gap < 10000) gap else 0L
+            
             lastResultTime = currentTime
 
             synchronized(accumulatorLock) {
