@@ -36,10 +36,11 @@ class AppAdapter(private val itemList: List<RowItem>) :
         
         // Load icon in background
         holder.iconLoadJob = adapterScope.launch {
+            val cleanPackageName = currentItem.packageName.substringBefore(':')
             val icon = withContext(Dispatchers.IO) {
                 try {
                     val pm = holder.itemView.context.packageManager
-                    pm.getApplicationIcon(currentItem.packageName)
+                    pm.getApplicationIcon(cleanPackageName)
                 } catch (e: PackageManager.NameNotFoundException) {
                     null
                 }

@@ -114,15 +114,25 @@ class DashboardViewModel(application: Application) : AndroidViewModel(applicatio
     private fun resolveAppName(packageName: String): String {
         val context = getApplication<Application>().applicationContext
         val pm = context.packageManager
+        
+        // Strip process suffix (e.g., :remote)
+        val cleanPackageName = packageName.substringBefore(':')
+        
         return try {
-            pm.getApplicationLabel(pm.getApplicationInfo(packageName, 0)).toString()
+            pm.getApplicationLabel(pm.getApplicationInfo(cleanPackageName, 0)).toString()
         } catch (_: PackageManager.NameNotFoundException) {
-            pm.getLaunchIntentForPackage(packageName)
+            pm.getLaunchIntentForPackage(cleanPackageName)
                 ?.resolveActivityInfo(pm, PackageManager.MATCH_DEFAULT_ONLY)
                 ?.loadLabel(pm)
                 ?.toString()
-                ?: packageName.substringAfterLast('.').replaceFirstChar { char ->
-                    if (char.isLowerCase()) char.titlecase() else char.toString()
+                ?: run {
+                    val parts = cleanPackageName.split('.')
+                    val candidate = parts.lastOrNull { it !in setOf("android", "google", "apps", "main", "core") }
+                        ?: parts.lastOrNull()
+                        ?: cleanPackageName
+                    candidate.replaceFirstChar { char ->
+                        if (char.isLowerCase()) char.titlecase() else char.toString()
+                    }
                 }
         }
     }

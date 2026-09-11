@@ -237,10 +237,14 @@ private fun mergeWithUsageStatsFallback(
 ): List<AppUsageEntry> {
     val mergedEntries = linkedMapOf<String, AppUsageEntry>()
     val homeIntent = Intent(Intent.ACTION_MAIN).addCategory(Intent.CATEGORY_HOME)
-    val homePackage = context.packageManager.resolveActivity(homeIntent, 0)?.activityInfo?.packageName
+    val pm = context.packageManager
+    val homePackage = pm.resolveActivity(homeIntent, 0)?.activityInfo?.packageName
+    
+    val launcherPackages = getLauncherPackages(context)
+    val myPackage = context.packageName
 
     totalForegroundTime.forEach { (packageName, totalTime) ->
-        if (totalTime > 0L && !shouldExcludeDashboardPackage(context, packageName, homePackage)) {
+        if (totalTime > 0L && !shouldExcludeDashboardPackage(packageName, launcherPackages, homePackage, myPackage)) {
             mergedEntries[packageName] = AppUsageEntry(
                 packageName = packageName,
                 totalTimeInForeground = totalTime,
@@ -252,7 +256,7 @@ private fun mergeWithUsageStatsFallback(
     usageStats.forEach { stats ->
         if (
             stats.totalTimeInForeground <= 0L ||
-            shouldExcludeDashboardPackage(context, stats.packageName, homePackage)
+            shouldExcludeDashboardPackage(stats.packageName, launcherPackages, homePackage, myPackage)
         ) {
             return@forEach
         }
@@ -274,23 +278,31 @@ private fun mergeWithUsageStatsFallback(
     return mergedEntries.values.toList()
 }
 
+private fun getLauncherPackages(context: Context): Set<String> {
+    val pm = context.packageManager
+    val launcherIntent = Intent(Intent.ACTION_MAIN, null).apply {
+        addCategory(Intent.CATEGORY_LAUNCHER)
+    }
+    return pm.queryIntentActivities(launcherIntent, 0)
+        .map { it.activityInfo.packageName }
+        .toSet()
+}
+
 private fun shouldExcludeDashboardPackage(
-    context: Context,
     packageName: String,
-    homePackage: String?
+    launcherPackages: Set<String>,
+    homePackage: String?,
+    myPackage: String
 ): Boolean {
-    if (packageName == homePackage) {
-        return true
-    }
-
-    val appLabel = try {
-        context.packageManager.getApplicationLabel(
-            context.packageManager.getApplicationInfo(packageName, 0)
-        ).toString().trim().lowercase()
-    } catch (_: Exception) {
-        packageName.substringAfterLast('.').trim().lowercase()
-    }
-
-    return appLabel in setOf("android", "gm", "system ui", "one ui home")
+    // Strip process suffix if any (e.g. com.instagram.android:remote -> com.instagram.android)
+    val cleanPackageName = packageName.substringBefore(':')
+    
+    // Exclude if:
+    // 1. It's the home launcher (user doesn't "use" it like an app)
+    // 2. It's our own app (tracking ourself is usually redundant)
+    // 3. It DOES NOT have a launcher icon (it's a background service or system component)
+    return cleanPackageName == homePackage || 
+           cleanPackageName == myPackage || 
+           cleanPackageName !in launcherPackages
 }
 

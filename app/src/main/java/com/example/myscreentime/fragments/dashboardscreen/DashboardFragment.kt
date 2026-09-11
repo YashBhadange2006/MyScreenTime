@@ -198,10 +198,13 @@ class DashboardFragment : Fragment() {
         imageView.setImageResource(R.drawable.ic_app_fallback)
         if (packageName == null) return
         
+        // Strip process suffix if any (e.g. com.instagram.android:remote)
+        val cleanPackageName = packageName.substringBefore(':')
+        
         viewLifecycleOwner.lifecycleScope.launch {
             val icon = withContext(Dispatchers.IO) {
                 try {
-                    requireContext().packageManager.getApplicationIcon(packageName)
+                    requireContext().packageManager.getApplicationIcon(cleanPackageName)
                 } catch (e: PackageManager.NameNotFoundException) {
                     null
                 }

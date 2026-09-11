@@ -203,11 +203,18 @@ class DashboardInsightService(
     }
 
     private fun resolveAppName(packageName: String): String {
+        // Strip process suffix (e.g., :remote)
+        val cleanPackageName = packageName.substringBefore(':')
+        
         return try {
             val pm = context.packageManager
-            pm.getApplicationLabel(pm.getApplicationInfo(packageName, 0)).toString()
+            pm.getApplicationLabel(pm.getApplicationInfo(cleanPackageName, 0)).toString()
         } catch (_: Exception) {
-            packageName.substringAfterLast('.').replaceFirstChar { char ->
+            val parts = cleanPackageName.split('.')
+            val candidate = parts.lastOrNull { it !in setOf("android", "google", "apps", "main", "core") }
+                ?: parts.lastOrNull()
+                ?: cleanPackageName
+            candidate.replaceFirstChar { char ->
                 if (char.isLowerCase()) char.titlecase() else char.toString()
             }
         }
