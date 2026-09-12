@@ -152,7 +152,6 @@ class DashboardFragment : Fragment() {
                 val dot = view.findViewById<View>(R.id.legend_color_dot)
                 val name = view.findViewById<TextView>(R.id.legend_app_name)
                 val percent = view.findViewById<TextView>(R.id.legend_percentage)
-                val duration = view.findViewById<TextView>(R.id.legend_duration)
 
                 val colorHex = if (label == "Other") "#E0E0E0" else colors[index % colors.size]
                 val colorInt = Color.parseColor(colorHex)
@@ -160,8 +159,7 @@ class DashboardFragment : Fragment() {
                 
                 name.text = label
                 percent.text = String.format(java.util.Locale.getDefault(), "%.0f%%", proportion * 100)
-                duration.text = formatTime(data.breakdownTimes[index])
-                
+
                 legendContainerVertical.addView(view)
             }
         }

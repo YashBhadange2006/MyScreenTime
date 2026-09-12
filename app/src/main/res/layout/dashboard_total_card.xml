@@ -1,20 +1,25 @@
 <?xml version="1.0" encoding="utf-8"?>
-<com.google.android.material.card.MaterialCardView xmlns:android="http://schemas.android.com/apk/res/android"
+
+<com.google.android.material.card.MaterialCardView
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     app:cardBackgroundColor="@color/bright_white"
     app:cardCornerRadius="24dp"
     app:cardElevation="1dp"
-    app:strokeWidth="0dp"
-    app:cardUseCompatPadding="@android:bool/config_enableMaterialDesignInPackageInstaller">
+    app:strokeWidth="0dp">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/total_screen_card_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="20dp">
+        android:paddingStart="12dp"
+        android:paddingEnd="12dp"
+        android:paddingTop="14dp"
+        android:paddingBottom="14dp">
 
+        <!-- DONUT -->
         <com.example.myscreentime.ui.components.DonutChartView
             android:id="@+id/donut_chart"
             android:layout_width="0dp"
@@ -23,24 +28,24 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintWidth_percent="0.4" />
+            app:layout_constraintWidth_percent="0.48" />
 
+        <!-- LEGEND -->
         <LinearLayout
             android:id="@+id/legend_container_vertical"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:layout_marginStart="16dp"
+            android:layout_marginStart="12dp"
             android:orientation="vertical"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toEndOf="@id/donut_chart"
-            app:layout_constraintTop_toTopOf="parent">
-            <!-- Dynamic legend items (item_dashboard_legend.xml) will be added here -->
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent">
+
+            <!-- Dynamic legend items added here -->
+
         </LinearLayout>
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-
 </com.google.android.material.card.MaterialCardView>
-
-
