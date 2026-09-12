@@ -8,7 +8,7 @@
 
     <item
         android:id="@+id/wellBeingFragment"
-        android:icon="@drawable/baseline_settings_24"
+        android:icon="@drawable/outline_nest_eco_leaf_24"
         android:title="Well Being"/>
 
     <item

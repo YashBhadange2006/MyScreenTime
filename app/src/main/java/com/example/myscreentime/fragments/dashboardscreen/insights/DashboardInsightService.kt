@@ -36,7 +36,7 @@ class DashboardInsightService(
             
             // Map UsageStats AppUsageEntry to Room AppUsageEntity for logic compatibility
             val appUsageRows = appUsageStats.map { 
-                AppUsageEntity(it.packageName, todayDate, it.totalTimeInForeground)
+                AppUsageEntity(it.packageName, todayDate, it.totalTimeInForeground, it.lastTimeUsed)
             }
             
             val activityData = dao.getActivityDataForDate(todayDate)

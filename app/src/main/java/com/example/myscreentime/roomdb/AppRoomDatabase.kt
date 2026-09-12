@@ -9,7 +9,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase
 
 @Database(
     entities = [AppUsageEntity::class, TotalUsageEntity::class, ActivityDataEntity::class],
-    version = 2,
+    version = 3,
     exportSchema = false
 )
 abstract class AppRoomDatabase : RoomDatabase() {
@@ -36,6 +36,12 @@ abstract class AppRoomDatabase : RoomDatabase() {
             }
         }
 
+        private val MIGRATION_2_3 = object : Migration(2, 3) {
+            override fun migrate(database: SupportSQLiteDatabase) {
+                database.execSQL("ALTER TABLE app_usage_table ADD COLUMN lastTimeUsed INTEGER NOT NULL DEFAULT 0")
+            }
+        }
+
         @Volatile
         private var INSTANCE: AppRoomDatabase? = null
 
@@ -45,7 +51,7 @@ abstract class AppRoomDatabase : RoomDatabase() {
                     context.applicationContext,
                     AppRoomDatabase::class.java,
                     "app_usage_database"
-                ).addMigrations(MIGRATION_1_2)
+                ).addMigrations(MIGRATION_1_2, MIGRATION_2_3)
                     .build()
                     .also { INSTANCE = it }
             }

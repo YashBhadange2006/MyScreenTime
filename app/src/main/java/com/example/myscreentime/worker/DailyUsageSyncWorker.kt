@@ -111,7 +111,8 @@ class DailyUsageSyncWorker(
                         AppUsageEntity(
                             packageName = it.packageName,
                             date = dayWindow.date,
-                            totalTimeInForeground = it.totalTimeInForeground
+                            totalTimeInForeground = it.totalTimeInForeground,
+                            lastTimeUsed = it.lastTimeUsed
                         )
                     }
 

@@ -1,9 +1,8 @@
 package com.example.myscreentime.fragments.dashboardscreen
 
 import android.content.pm.PackageManager
-import android.content.res.ColorStateList
 import android.graphics.Color
-import android.graphics.drawable.Drawable
+import android.graphics.drawable.GradientDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -11,8 +10,6 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.LinearLayout
 import android.widget.TextView
-import com.google.android.material.chip.Chip
-import com.google.android.material.chip.ChipGroup
 import androidx.core.content.ContextCompat
 import androidx.core.text.HtmlCompat
 import androidx.fragment.app.Fragment
@@ -24,11 +21,11 @@ import androidx.recyclerview.widget.SimpleItemAnimator
 import com.example.myscreentime.R
 import com.example.myscreentime.fragments.dashboardscreen.insights.DashboardInsightService
 import com.example.myscreentime.roomdb.AppRoomDatabase
+import com.example.myscreentime.ui.components.DonutChartView
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import java.util.Locale
 
 class DashboardFragment : Fragment() {
 
@@ -36,15 +33,13 @@ class DashboardFragment : Fragment() {
 
     private lateinit var insightBody: TextView
     private lateinit var insightService: DashboardInsightService
-    private lateinit var tvPercentComp: TextView
-    private lateinit var tvTotalScreenTime: TextView
     private lateinit var mostUsedIcon: ImageView
     private lateinit var mostUsedName: TextView
     private lateinit var lastUsedIcon: ImageView
     private lateinit var lastUsedName: TextView
     private lateinit var appList: RecyclerView
-    private lateinit var breakdownContainer: LinearLayout
-    private lateinit var legendContainer: ChipGroup
+    private lateinit var donutChart: DonutChartView
+    private lateinit var legendContainerVertical: LinearLayout
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -56,18 +51,19 @@ class DashboardFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        tvTotalScreenTime = view.findViewById(R.id.total_screen_textview)
-        breakdownContainer = view.findViewById(R.id.total_screen_breakdown_container)
-        legendContainer = view.findViewById(R.id.breakdown_legend_container)
-        tvPercentComp = view.findViewById(R.id.percent_comp_textview)
+        donutChart = view.findViewById(R.id.donut_chart)
+        legendContainerVertical = view.findViewById(R.id.legend_container_vertical)
+        
         val mostUsedCard = view.findViewById<View>(R.id.most_used_app_card)
         mostUsedIcon = mostUsedCard.findViewById(R.id.iv_app_icon)
         val mostUsedTitle = mostUsedCard.findViewById<TextView>(R.id.text_above_app_name)
         mostUsedName = mostUsedCard.findViewById(R.id.tv_app_name)
+
         val lastUsedCard = view.findViewById<View>(R.id.last_used_app_card)
         lastUsedIcon = lastUsedCard.findViewById(R.id.iv_app_icon)
         val lastUsedTitle = lastUsedCard.findViewById<TextView>(R.id.text_above_app_name)
         lastUsedName = lastUsedCard.findViewById(R.id.tv_app_name)
+        
         val insightCard = view.findViewById<View>(R.id.insight_card)
         insightBody = insightCard.findViewById(R.id.insight_body)
         appList = view.findViewById(R.id.app_list)
@@ -99,7 +95,6 @@ class DashboardFragment : Fragment() {
     }
 
     private fun showSkeletonUi() {
-        showSkeletonText(tvTotalScreenTime)
         showSkeletonText(mostUsedName)
         showSkeletonIcon(mostUsedIcon)
         showSkeletonText(lastUsedName)
@@ -109,20 +104,35 @@ class DashboardFragment : Fragment() {
     }
 
     private fun bindData(data: DashboardData) {
-        tvTotalScreenTime.text = data.totalTime.let { formatTime(it) }
-        tvTotalScreenTime.background = null
-        updateBreakdownBar(data.breakdownProportions, data.breakdownLabels)
+        // Update Donut Chart
+        val colors = listOf("#EE4035", "#F3A530", "#56B870", "#007AFF", "#B0B0B0")
+        val segments = data.breakdownProportions.mapIndexed { index, prop ->
+            val colorHex = if (data.breakdownLabels[index] == "Other") "#E0E0E0" else colors[index % colors.size]
+            DonutChartView.Segment(prop, Color.parseColor(colorHex))
+        }
         
-        tvPercentComp.text = data.percentText
-        tvPercentComp.setTextColor(
-            if (data.isMoreThanYesterday) ContextCompat.getColor(requireContext(), R.color.red_500)
-            else ContextCompat.getColor(requireContext(), R.color.green_500)
+        val compColor = if (data.isMoreThanYesterday) {
+            ContextCompat.getColor(requireContext(), R.color.red_500)
+        } else {
+            ContextCompat.getColor(requireContext(), R.color.green_500)
+        }
+        
+        val prefix = if (data.isMoreThanYesterday) "↑ " else "↓ "
+        donutChart.setData(
+            segments = segments,
+            totalTime = formatTime(data.totalTime),
+            comparison = prefix + data.percentText,
+            compColor = compColor
         )
 
+        // Update Legend
+        updateLegend(data, colors)
+
+        // Update Highlight Cards
         mostUsedName.text = data.mostUsedName ?: "No app data"
         mostUsedName.background = null
         loadIconAsync(mostUsedIcon, data.mostUsedPackage)
-        
+
         lastUsedName.text = data.lastUsedName ?: "No app data"
         lastUsedName.background = null
         loadIconAsync(lastUsedIcon, data.lastUsedPackage)
@@ -130,75 +140,37 @@ class DashboardFragment : Fragment() {
         appList.adapter = AppAdapter(data.usageItems)
     }
 
-    private fun updateBreakdownBar(proportions: List<Float>, labels: List<String>) {
-        breakdownContainer.removeAllViews()
-        legendContainer.removeAllViews()
-        if (proportions.isEmpty()) return
+    private fun updateLegend(data: DashboardData, colors: List<String>) {
+        legendContainerVertical.removeAllViews()
+        val inflater = LayoutInflater.from(requireContext())
 
-        val colors = listOf(
-            "#5856D6", // Indigo
-            "#FF9500", // Orange
-            "#34C759", // Green
-            "#007AFF", // Blue
-            "#FF2D55"  // Pink
-        )
+        data.breakdownLabels.forEachIndexed { index, label ->
+            val proportion = data.breakdownProportions[index]
+            if (proportion > 0.001f) {
+                val view = inflater.inflate(R.layout.item_dashboard_legend, legendContainerVertical, false)
+                
+                val dot = view.findViewById<View>(R.id.legend_color_dot)
+                val name = view.findViewById<TextView>(R.id.legend_app_name)
+                val percent = view.findViewById<TextView>(R.id.legend_percentage)
+                val duration = view.findViewById<TextView>(R.id.legend_duration)
 
-        var totalAllocated = 0f
-        proportions.forEachIndexed { index, proportion ->
-            if (proportion > 0.01f) {
-                val colorHex = colors[index % colors.size]
+                val colorHex = if (label == "Other") "#E0E0E0" else colors[index % colors.size]
                 val colorInt = Color.parseColor(colorHex)
+                (dot.background as? GradientDrawable)?.setColor(colorInt)
                 
-                // Add to Bar
-                val segment = View(requireContext())
-                segment.setBackgroundColor(colorInt)
-                val params = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, proportion)
-                segment.layoutParams = params
-                breakdownContainer.addView(segment)
+                name.text = label
+                percent.text = String.format(java.util.Locale.getDefault(), "%.0f%%", proportion * 100)
+                duration.text = formatTime(data.breakdownTimes[index])
                 
-                // Add to Legend
-                val appName = labels.getOrNull(index) ?: "App"
-                val legendItem = TextView(requireContext()).apply {
-                    text = appName
-                    setTextColor(Color.GRAY)
-                    textSize = 11f
-                    setPadding(0, 0, getDpAsPx(8f).toInt(), 0)
-                    gravity = android.view.Gravity.CENTER_VERTICAL
-                    
-                    // Add color dot
-                    val dot = android.graphics.drawable.GradientDrawable().apply {
-                        shape = android.graphics.drawable.GradientDrawable.OVAL
-                        setSize(getDpAsPx(8f).toInt(), getDpAsPx(8f).toInt())
-                        setColor(colorInt)
-                    }
-                    setCompoundDrawablesWithIntrinsicBounds(dot, null, null, null)
-                    compoundDrawablePadding = getDpAsPx(6f).toInt()
-                }
-                legendContainer.addView(legendItem)
-                
-                totalAllocated += proportion
+                legendContainerVertical.addView(view)
             }
         }
-
-        // Fill the rest with "Others"
-        if (totalAllocated < 0.98f) {
-            val othersProportion = 1f - totalAllocated
-            val others = View(requireContext())
-            others.setBackgroundColor(Color.parseColor("#E1E4E8"))
-            others.layoutParams = LinearLayout.LayoutParams(0, LinearLayout.LayoutParams.MATCH_PARENT, othersProportion)
-            breakdownContainer.addView(others)
-        }
-    }
-
-    private fun getDpAsPx(dp: Float): Float {
-        return dp * resources.displayMetrics.density
     }
 
     private fun loadIconAsync(imageView: ImageView, packageName: String?) {
         imageView.setImageResource(R.drawable.ic_app_fallback)
         if (packageName == null) return
         
-        // Strip process suffix if any (e.g. com.instagram.android:remote)
         val cleanPackageName = packageName.substringBefore(':')
         
         viewLifecycleOwner.lifecycleScope.launch {

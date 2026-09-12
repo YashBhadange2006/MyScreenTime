@@ -9,64 +9,36 @@
     app:strokeWidth="0dp"
     app:cardUseCompatPadding="@android:bool/config_enableMaterialDesignInPackageInstaller">
 
-    <LinearLayout
-        android:id="@+id/total_screen_card"
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/total_screen_card_root"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:paddingLeft="24dp"
-        android:paddingTop="20dp"
-        android:paddingRight="24dp"
-        android:paddingBottom="12dp">
+        android:padding="20dp">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="Total Screen Time"
-            android:textSize="16dp"
-            android:textColor="#5B6B7F"
-            />
-
-        <TextView
-            android:id="@+id/total_screen_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="0h 0m"
-            android:textSize="32dp"
-            android:textStyle="bold"
-            android:textColor="#102A43"/>
-
-        <!-- Description Text -->
-        <TextView
-            android:id="@+id/percent_comp_textview"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="12% less than yestarday."
-            android:textColor="#4A5568"
-            android:textSize="14sp" />
+        <com.example.myscreentime.ui.components.DonutChartView
+            android:id="@+id/donut_chart"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            app:layout_constraintDimensionRatio="1:1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintWidth_percent="0.4" />
 
         <LinearLayout
-            android:id="@+id/total_screen_breakdown_container"
-            android:layout_width="match_parent"
-            android:layout_height="10dp"
-            android:layout_marginTop="16dp"
-            android:orientation="horizontal"
-            android:weightSum="1"
-            android:background="@drawable/breakdown_bar_background">
-            <!-- Dynamic segments will be added here -->
+            android:id="@+id/legend_container_vertical"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:orientation="vertical"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toEndOf="@id/donut_chart"
+            app:layout_constraintTop_toTopOf="parent">
+            <!-- Dynamic legend items (item_dashboard_legend.xml) will be added here -->
         </LinearLayout>
 
-        <com.google.android.material.chip.ChipGroup
-            android:id="@+id/breakdown_legend_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="12dp"
-            app:chipSpacingVertical="4dp"
-            app:chipSpacingHorizontal="8dp">
-            <!-- Dynamic legend items will be added here -->
-        </com.google.android.material.chip.ChipGroup>
-
-    </LinearLayout>
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 
 </com.google.android.material.card.MaterialCardView>

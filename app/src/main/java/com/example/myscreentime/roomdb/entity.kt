@@ -7,7 +7,8 @@ import androidx.room.PrimaryKey
 data class AppUsageEntity(
     val packageName: String,
     val date: String,
-    val totalTimeInForeground: Long
+    val totalTimeInForeground: Long,
+    val lastTimeUsed: Long = 0L
 )
 
 @Entity(tableName = "total_usage_table")
