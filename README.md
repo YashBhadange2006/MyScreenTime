@@ -22,20 +22,22 @@ Status: early stage. This repo currently has the initial setup and this README, 
       <kbd><img src="img/img1.png" width="200" /></kbd>
     </td>
     <td align="center" valign="top">
-      <kbd><img src="img/img2.png" width="200" /></kbd>
+      <kbd><img src="img/img2.jpeg" width="200" /></kbd>
     </td>
     <td align="center" valign="top">
-      <kbd><img src="img/img6.png" width="200" /></kbd>
+      <kbd><img src="img/img3.jpeg" width="200" /></kbd>
     </td>
   </tr>
   <tr>
     <td align="center" valign="top">
-      <kbd><img src="img/img4.png" width="200" /></kbd>
+      <kbd><img src="img/img4.jpeg" width="200" /></kbd>
     </td>
     <td align="center" valign="top">
-      <kbd><img src="img/img7.png" width="200" /></kbd>
+      <kbd><img src="img/img5.jpeg" width="200" /></kbd>
     </td>
-    <td></td>
+    <td align="center" valign="top">
+      <kbd><img src="img/img6.jpeg" width="200" /></kbd>
+    </td>
   </tr>
 </table>
 
