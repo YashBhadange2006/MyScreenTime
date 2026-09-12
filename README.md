@@ -1,14 +1,12 @@
-# MyScreenTime App
+# MyScreenTime
 
+<p align="center"><b>Screen time and physical activity, tracked together, on one dashboard.</b></p>
 <p align="center">
-  <img src="img/app_logo.png" width="120" />
+  <img src="https://img.shields.io/badge/Kotlin-100%25-7F52FF?logo=kotlin&logoColor=white" />
+  <img src="https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white" />
+  <img src="https://img.shields.io/badge/AGP-9.2.1-02303A?logo=gradle&logoColor=white" />
+  <img src="https://img.shields.io/badge/ML-On--Device-success" />
 </p>
-
-![License](https://img.shields.io/github/license/YashBhadange2006/MyScreenTime)
-![Kotlin](https://img.shields.io/badge/Kotlin-100%25-7F52FF?logo=kotlin&logoColor=white)
-![Platform](https://img.shields.io/badge/Platform-Android-3DDC84?logo=android&logoColor=white)
-![Status](https://img.shields.io/badge/Status-Early%20Stage-yellow)
-![Stars](https://img.shields.io/github/stars/YashBhadange2006/MyScreenTime?style=social)
 
 An Android app that tracks screen time and physical activity together, and gives suggestions based on both. Most apps handle these separately: a screen time tracker tells you how long you were on your phone, and a fitness app tells you how much you moved. This app connects the two, so a suggestion like "you've been sitting and scrolling for two hours" is possible.
 ## Screenshots
