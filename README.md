@@ -1,4 +1,4 @@
-# MyScreenTime
+<h1 align="center">MyScreenTime</h1>
 
 <p align="center">
   <img src="img/app_logo.png" width="120" />
