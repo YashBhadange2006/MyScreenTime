@@ -1,5 +1,8 @@
 # MyScreenTime
 
+<p align="center">
+  <img src="img/app_logo.png" width="120" />
+</p>
 <p align="center"><b>Screen time and physical activity, tracked together, on one dashboard.</b></p>
 <p align="center">
   <img src="https://img.shields.io/badge/Kotlin-100%25-7F52FF?logo=kotlin&logoColor=white" />
