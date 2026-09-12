@@ -10,10 +10,7 @@
 ![Status](https://img.shields.io/badge/Status-Early%20Stage-yellow)
 ![Stars](https://img.shields.io/github/stars/YashBhadange2006/MyScreenTime?style=social)
 
-An Android app for tracking screen time and app usage, with AI-generated insights on digital habits. Built on Android's `UsageStatsManager`, storing history locally in Room, with Gemini used to turn raw usage stats into readable feedback.
-
-Status: early stage. This repo currently has the initial setup and this README, no screens or database code yet. Structure and plans below are subject to change as the project takes shape.
-
+An Android app that tracks screen time and physical activity together, and gives suggestions based on both. Most apps handle these separately: a screen time tracker tells you how long you were on your phone, and a fitness app tells you how much you moved. This app connects the two, so a suggestion like "you've been sitting and scrolling for two hours" is possible.
 ## Screenshots
 
 <table align="center">
@@ -41,48 +38,72 @@ Status: early stage. This repo currently has the initial setup and this README, 
   </tr>
 </table>
 
-## Why
+## What it does
 
-Most screen time apps just show you a pie chart and leave it there. The idea here is to go one step further: take the raw usage data and have an LLM summarize it into something actually useful, "you've been on Instagram 40% more this week than last," that kind of thing, plus let users set limits and get notified when they're blown past.
+- Tracks total daily screen time, most-used app, and last-used app via Android's `UsageStatsManager`
+- Classifies physical activity in real time (Walking, Walking Upstairs, Walking Downstairs, Sitting, Standing, Laying) using the phone's accelerometer and gyroscope
+- Shows a live activity breakdown and 7-day activity trends on the Well Being screen
+- Combines both data sources into a single insight, instead of showing two disconnected numbers
+- Configurable daily screen time goal with notifications when exceeded
+## Activity recognition model
 
-## Planned tech stack
+Physical activity classification runs fully on-device using a GRU (Gated Recurrent Unit) based model, a type of recurrent neural network layer built to handle sequential data. Motion isn't a single instantaneous reading, it's a pattern over time, and the GRU is what lets the model read that pattern instead of judging one instant in isolation.
 
-- Kotlin, XML views, MVVM
-- Room for local storage of usage history
-- Retrofit + Gemini API for generating insights
-- WorkManager for background checks against usage limits (undecided yet)
+- **Source:** [vkm007/Human-Activity-Recognition](https://github.com/vkm007/Human-Activity-Recognition) (not trained in-house)
+- **Dataset:** UCI HAR (accelerometer and gyroscope readings from a waist-mounted smartphone)
+- **Input:** 128 timesteps of 9 features per prediction, accelerometer (x, y, z), gyroscope (x, y, z), and total acceleration (x, y, z)
+- **Output:** 6-class softmax (Walking, Walking Upstairs, Walking Downstairs, Sitting, Standing, Laying)
+- **Size:** 44 KB, runs on-device via TensorFlow Lite / LiteRT, no server calls
+- **Validation:** before integrating it, the model was tested against the real UCI HAR test set independently, measuring 91% accuracy on unseen data rather than relying on the source repository's reported numbers
+## Architecture
 
-## Planned features
+The app runs two data pipelines that feed into a shared insight layer:
 
-- Daily and per-app screen time tracking via `UsageStatsManager`
-- Local history stored in Room
-- AI-generated summaries of usage patterns
-- Configurable daily limits with notifications when exceeded
-- Weekly/monthly reports, data export (later, not near-term)
+1. **Sensor pipeline:** SensorManager collects accelerometer, gyroscope, and linear acceleration readings, buffers them into a 128-sample sliding window, and runs the window through the on-device GRU model.
+2. **Screen time pipeline:** `UsageStatsManager` reads per-app usage, stored locally in a Room database.
+   Both outputs are combined into one suggestion (rule-based, with an optional Groq API-based version) and surfaced on the Balance/Well Being screen.
 
+## Tech stack
+
+- **Language:** Kotlin
+- **UI:** XML views for Dashboard and Settings; the Well Being screen (where the activity model runs) is built in Jetpack Compose
+- **Local storage:** Room
+- **ML inference:** TensorFlow Lite / LiteRT
+- **Architecture pattern:** MVVM
 ## Permissions
 
-Will require Usage Access permission (`PACKAGE_USAGE_STATS`) to read app usage stats. Nothing gets sent off-device without the user triggering it.
+- `PACKAGE_USAGE_STATS` (Usage Access) to read app usage statistics
+- `BODY_SENSORS` / standard sensor access for accelerometer and gyroscope
+  No data leaves the device except when the user explicitly enables AI-generated insights (Groq API).
+
+## API key setup
+
+The app uses the Groq API for AI-generated insights. The key is read from `local.properties` at the project root, which is git-ignored and never committed.
+
+1. Get an API key from [Groq](https://console.groq.com/keys).
+2. In the project root (same folder as `settings.gradle.kts`), open or create `local.properties`.
+3. Add this line:
+```
+GROQ_API_KEY=your_key_here
+```
+
+Gradle exposes this to the app at build time via `BuildConfig.GROQ_API_KEY`. Without this key, the app runs normally but AI-generated insights will not work.
 
 ## Setup
 
-Requires Android Studio, SDK 24+, JDK 17.
-
-```bash
+- **Android Studio:** latest stable release (required to support AGP 9.2.1)
+- **Android Gradle Plugin (AGP):** 9.2.1
+- **Gradle:** 9.4.1 (via wrapper, no separate install needed)
+- **Kotlin:** 2.2.10
+- **JDK:** 17 (required to run AGP 9.x; app bytecode target is Java 11)
+- **compileSdk / targetSdk:** 37
+- **minSdk:** 24 (Android 7.0+)
+```
 git clone https://github.com/YashBhadange2006/MyScreenTime.git
 ```
 
-Open in Android Studio, let Gradle sync, run on a device or emulator.
+Open in Android Studio, let Gradle sync, add the API key as described above, then run on a physical device. Sensor-based activity recognition will not produce meaningful data on an emulator, since there is no real accelerometer/gyroscope input to read.
 
-## Contributing
+## Credits
 
-Open to it once there's actual code to contribute to. For now, issues/suggestions are fine.
-
-## License
-
-MIT, see `LICENSE`.
-
-## Author
-
-Yash Bhadange
-[GitHub](https://github.com/YashBhadange2006) · [LinkedIn](https://www.linkedin.com/in/yash-bhadange-41b713308/)
+Activity recognition model adapted from [vkm007/Human-Activity-Recognition](https://github.com/vkm007/Human-Activity-Recognition), trained on the [UCI HAR dataset](https://archive.ics.uci.edu/dataset/240/human+activity+recognition+using+smartphones).
